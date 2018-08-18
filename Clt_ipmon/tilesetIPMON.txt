@@ -1,0 +1,609 @@
+#tileset
+tilesetIPMON.bmp
+19 28
+tile0: noncollision
+tile1: noncollision
+tile2: collision
+tile3: collision
+tile4: collision
+tile5: collision
+tile6: collision
+tile7: collision
+tile8: collision
+tile9: collision
+tile10: collision
+tile11: collision
+tile12: collision
+tile13: collision
+tile14: collision
+tile15: collision
+tile16: collision
+tile17: collision
+tile18: collision
+tile19: collision
+tile20: collision
+tile21: collision
+tile22: collision
+tile23: collision
+tile24: collision
+tile25: collision
+tile26: collision
+tile27: collision
+tile28: collision
+tile29: collision
+tile30: collision
+tile31: collision
+tile32: collision
+tile33: collision
+tile34: collision
+tile35: collision
+tile36: collision
+tile37: collision
+tile38: collision
+tile39: collision
+tile40: collision
+tile41: collision
+tile42: collision
+tile43: collision
+tile44: collision
+tile45: collision
+tile46: collision
+tile47: collision
+tile48: collision
+tile49: collision
+tile50: collision
+tile51: collision
+tile52: collision
+tile53: collision
+tile54: collision
+tile55: collision
+tile56: collision
+tile57: collision
+tile58: collision
+tile59: herbe
+tile60: collision
+tile61: collision
+tile62: regenerer
+tile63: regenerer
+tile64: collision
+tile65: collision
+tile66: collision
+tile67: collision
+tile68: collision
+tile69: collision
+tile70: collision
+tile71: collision
+tile72: collision
+tile73: collision
+tile74: collision
+tile75: collision
+tile76: collision
+tile77: collision
+tile78: collision
+tile79: collision
+tile80: collision
+tile81: collision
+tile82: collision
+tile83: collision
+tile84: collision
+tile85: collision
+tile86: collision
+tile87: collision
+tile88: collision
+tile89: collision
+tile90: collision
+tile91: collision
+tile92: collision
+tile93: collision
+tile94: collision
+tile95: collision
+tile96: collision
+tile97: collision
+tile98: collision
+tile99: collision
+tile100: collision
+tile101: collision
+tile102: collision
+tile103: collision
+tile104: collision
+tile105: collision
+tile106: collision
+tile107: collision
+tile108: collision
+tile109: collision
+tile110: collision
+tile111: collision
+tile112: collision
+tile113: collision
+tile114: collision
+tile115: collision
+tile116: collision
+tile117: collision
+tile118: collision
+tile119: collision
+tile120: collision
+tile121: collision
+tile122: collision
+tile123: collision
+tile124: collision
+tile125: collision
+tile126: collision
+tile127: collision
+tile128: collision
+tile129: collision
+tile130: collision
+tile131: collision
+tile132: collision
+tile133: collision
+tile134: collision
+tile135: collision
+tile136: collision
+tile137: collision
+tile138: collision
+tile139: collision
+tile140: collision
+tile141: collision
+tile142: collision
+tile143: collision
+tile144: collision
+tile145: collision
+tile146: collision
+tile147: collision
+tile148: collision
+tile149: collision
+tile150: collision
+tile151: collision
+tile152: collision
+tile153: collision
+tile154: collision
+tile155: collision
+tile156: collision
+tile157: collision
+tile158: collision
+tile159: collision
+tile160: collision
+tile161: collision
+tile162: collision
+tile163: collision
+tile164: collision
+tile165: collision
+tile166: collision
+tile167: collision
+tile168: collision
+tile169: collision
+tile170: collision
+tile171: collision
+tile172: collision
+tile173: collision
+tile174: collision
+tile175: collision
+tile176: collision
+tile177: collision
+tile178: collision
+tile179: collision
+tile180: collision
+tile181: collision
+tile182: collision
+tile183: collision
+tile184: collision
+tile185: collision
+tile186: collision
+tile187: collision
+tile188: collision
+tile189: collision
+tile190: collision
+tile191: collision
+tile192: collision
+tile193: collision
+tile194: collision
+tile195: collision
+tile196: collision
+tile197: collision
+tile198: collision
+tile199: collision
+tile200: collision
+tile201: collision
+tile202: collision
+tile203: collision
+tile204: collision
+tile205: collision
+tile206: collision
+tile207: collision
+tile208: collision
+tile209: collision
+tile210: collision
+tile211: collision
+tile212: collision
+tile213: collision
+tile214: collision
+tile215: collision
+tile216: collision
+tile217: collision
+tile218: collision
+tile219: collision
+tile220: collision
+tile221: collision
+tile222: collision
+tile223: collision
+tile224: collision
+tile225: collision
+tile226: collision
+tile227: collision
+tile228: collision
+tile229: collision
+tile230: collision
+tile231: collision
+tile232: collision
+tile233: collision
+tile234: collision
+tile235: collision
+tile236: collision
+tile237: collision
+tile238: collision
+tile239: collision
+tile240: collision
+tile241: collision
+tile242: collision
+tile243: collision
+tile244: collision
+tile245: collision
+tile246: collision
+tile247: collision
+tile248: collision
+tile249: collision
+tile250: collision
+tile251: collision
+tile252: collision
+tile253: collision
+tile254: collision
+tile255: collision
+tile256: collision
+tile257: collision
+tile258: collision
+tile259: collision
+tile260: collision
+tile261: collision
+tile262: collision
+tile263: collision
+tile264: collision
+tile265: collision
+tile266: collision
+tile267: collision
+tile268: collision
+tile269: collision
+tile270: collision
+tile271: collision
+tile272: collision
+tile273: collision
+tile274: collision
+tile275: collision
+tile276: collision
+tile277: collision
+tile278: collision
+tile279: collision
+tile280: collision
+tile281: collision
+tile282: collision
+tile283: collision
+tile284: collision
+tile285: collision
+tile286: collision
+tile287: collision
+tile288: collision
+tile289: collision
+tile290: collision
+tile291: collision
+tile292: collision
+tile293: collision
+tile294: collision
+tile295: collision
+tile296: collision
+tile297: collision
+tile298: collision
+tile299: collision
+tile300: collision
+tile301: collision
+tile302: collision
+tile303: collision
+tile304: collision
+tile305: collision
+tile306: collision
+tile307: collision
+tile308: collision
+tile309: collision
+tile310: collision
+tile311: collision
+tile312: collision
+tile313: collision
+tile314: collision
+tile315: collision
+tile316: collision
+tile317: collision
+tile318: collision
+tile319: collision
+tile320: collision
+tile321: collision
+tile322: collision
+tile323: collision
+tile324: collision
+tile325: collision
+tile326: collision
+tile327: collision
+tile328: collision
+tile329: collision
+tile330: collision
+tile331: collision
+tile332: collision
+tile333: collision
+tile334: collision
+tile335: collision
+tile336: collision
+tile337: collision
+tile338: collision
+tile339: collision
+tile340: collision
+tile341: collision
+tile342: collision
+tile343: collision
+tile344: collision
+tile345: collision
+tile346: collision
+tile347: collision
+tile348: collision
+tile349: collision
+tile350: collision
+tile351: collision
+tile352: collision
+tile353: collision
+tile354: collision
+tile355: collision
+tile356: collision
+tile357: collision
+tile358: collision
+tile359: collision
+tile360: collision
+tile361: collision
+tile362: collision
+tile363: collision
+tile364: collision
+tile365: collision
+tile366: collision
+tile367: collision
+tile368: collision
+tile369: collision
+tile370: collision
+tile371: collision
+tile372: collision
+tile373: collision
+tile374: collision
+tile375: collision
+tile376: collision
+tile377: collision
+tile378: collision
+tile379: collision
+tile380: collision
+tile381: collision
+tile382: collision
+tile383: collision
+tile384: collision
+tile385: collision
+tile386: collision
+tile387: collision
+tile388: collision
+tile389: collision
+tile390: collision
+tile391: collision
+tile392: collision
+tile393: collision
+tile394: collision
+tile395: collision
+tile396: collision
+tile397: collision
+tile398: collision
+tile399: collision
+tile400: collision
+tile401: collision
+tile402: collision
+tile403: collision
+tile404: collision
+tile405: collision
+tile406: collision
+tile407: collision
+tile408: collision
+tile409: collision
+tile410: collision
+tile411: collision
+tile412: collision
+tile413: collision
+tile414: collision
+tile415: collision
+tile416: collision
+tile417: collision
+tile418: collision
+tile419: collision
+tile420: collision
+tile421: collision
+tile422: collision
+tile423: collision
+tile424: collision
+tile425: collision
+tile426: collision
+tile427: collision
+tile428: collision
+tile429: collision
+tile430: collision
+tile431: collision
+tile432: collision
+tile433: collision
+tile434: collision
+tile435: collision
+tile436: collision
+tile437: collision
+tile438: collision
+tile439: collision
+tile440: collision
+tile441: collision
+tile442: collision
+tile443: collision
+tile444: collision
+tile445: collision
+tile446: collision
+tile447: collision
+tile448: collision
+tile449: collision
+tile450: collision
+tile451: collision
+tile452: collision
+tile453: collision
+tile454: collision
+tile455: collision
+tile456: collision
+tile457: collision
+tile458: collision
+tile459: collision
+tile460: collision
+tile461: collision
+tile462: collision
+tile463: collision
+tile464: collision
+tile465: collision
+tile466: collision
+tile467: collision
+tile468: collision
+tile469: collision
+tile470: collision
+tile471: collision
+tile472: collision
+tile473: collision
+tile474: collision
+tile475: collision
+tile476: collision
+tile477: collision
+tile478: collision
+tile479: collision
+tile480: collision
+tile481: collision
+tile482: collision
+tile483: collision
+tile484: collision
+tile485: collision
+tile486: collision
+tile487: collision
+tile488: collision
+tile489: collision
+tile490: collision
+tile491: collision
+tile492: collision
+tile493: collision
+tile494: collision
+tile495: collision
+tile496: collision
+tile497: collision
+tile498: collision
+tile499: collision
+tile500: collision
+tile501: collision
+tile502: collision
+tile503: collision
+tile504: collision
+tile505: collision
+tile506: collision
+tile507: collision
+tile508: collision
+tile509: collision
+tile510: collision
+tile511: collision
+tile512: collision
+tile513: collision
+tile514: collision
+tile515: collision
+tile516: collision
+tile517: collision
+tile518: collision
+tile519: collision
+tile520: collision
+tile521: collision
+tile522: collision
+tile523: collision
+tile524: collision
+tile525: collision
+tile526: collision
+tile527: collision
+tile528: collision
+tile529: collision
+tile530: collision
+tile531: collision
+#level
+72 72
+1 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	76 	77 	1 	1 	1 	1 	4 	5 	6 	7 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	4 	5 	6 	7 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	23 	24 	25 	26 	1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	57 	58 	1 	23 	24 	25 	26 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	1 	1 	42 	43 	44 	45 	1 	1 	1 	1 	59 	1 	76 	77 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	76 	77 	1 	42 	43 	44 	45 	1 	1 	1 	1 	1 	59 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	62 	63 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	62 	63 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	57 	58 	1 	57 	58 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	57 	58 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	76 	77 	1 	76 	77 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	76 	77 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	
+57 	58 	1 	1 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	
+76 	77 	1 	1 	1 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	57 	58 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	57 	58 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	1 	1 	1 	1 	1 	1 	76 	77 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	4 	5 	6 	7 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	59 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	23 	24 	25 	26 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	1 	59 	1 	
+1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	42 	43 	44 	45 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	62 	63 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	1 	76 	77 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+57 	58 	1 	1 	1 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+76 	77 	1 	1 	1 	1 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	4 	5 	6 	7 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	57 	58 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	23 	24 	25 	26 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	1 	76 	77 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	42 	43 	44 	45 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	62 	63 	1 	1 	1 	1 	1 	57 	58 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	57 	58 	1 	0 	0 	0 	0 	0 	0 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	76 	77 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	76 	77 	1 	0 	0 	0 	0 	0 	0 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	59 	1 	1 	1 	57 	58 	1 	0 	0 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	57 	58 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	
+1 	1 	1 	1 	1 	1 	1 	76 	77 	1 	0 	0 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	76 	77 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	19 	20 	21 	22 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	57 	58 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	38 	39 	40 	41 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	76 	77 	
+1 	1 	1 	1 	4 	5 	6 	7 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	23 	24 	25 	26 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	59 	59 	1 	59 	59 	59 	1 	1 	1 	
+1 	1 	1 	1 	42 	43 	44 	45 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	62 	63 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	59 	59 	1 	0 	0 	1 	57 	58 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	0 	0 	1 	59 	59 	59 	59 	59 	59 	59 	1 	1 	
+57 	58 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	1 	0 	0 	1 	76 	77 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+76 	77 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	59 	59 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	57 	58 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	
+1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	76 	77 	1 	1 	0 	0 	1 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	59 	59 	59 	59 	1 	1 	1 	59 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	
+1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	59 	59 	1 	1 	1 	1 	59 	1 	1 	1 	0 	0 	1 	1 	57 	58 	1 	1 	59 	59 	1 	1 	
+1 	1 	59 	59 	59 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	0 	0 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	0 	0 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	57 	58 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	4 	5 	6 	7 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	76 	77 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	59 	59 	1 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	4 	5 	6 	7 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	23 	24 	25 	26 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	23 	24 	25 	26 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	42 	43 	44 	45 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	57 	58 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	42 	43 	44 	45 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	62 	63 	1 	1 	57 	58 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	76 	77 	1 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	57 	58 	1 	62 	63 	1 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	76 	77 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	76 	77 	1 	0 	0 	1 	1 	1 	1 	
+1 	1 	1 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	57 	58 	1 	
+1 	1 	57 	58 	1 	59 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	59 	59 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	59 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	76 	77 	1 	
+1 	1 	76 	77 	1 	1 	59 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	
+1 	59 	59 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	
+1 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
+1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	1 	57 	58 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	57 	58 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	76 	77 	1 	1 	1 	1 	0 	0 	1 	1 	1 	1 	1 	1 	1 	1 	76 	77 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	57 	58 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	0 	0 	1 	4 	5 	6 	7 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	76 	77 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	0 	0 	1 	23 	24 	25 	26 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	
+1 	1 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	0 	0 	1 	42 	43 	44 	45 	1 	57 	58 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	59 	59 	59 	59 	59 	59 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	57 	58 	1 	0 	0 	1 	1 	62 	63 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	59 	59 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	76 	77 	1 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	57 	58 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	59 	59 	1 	1 	1 	1 	1 	
+1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	0 	0 	0 	0 	0 	0 	1 	1 	1 	1 	1 	1 	76 	77 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	1 	
