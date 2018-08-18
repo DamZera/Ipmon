@@ -413,8 +413,9 @@ int main(int argc, char *argv[])  {
 	printf("After menu!!!!!!!\n");
 
 	if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
-        jeu(dresseur->map,dresseur->coodX,dresseur->coodY,socket_cli,dresseur->pseudo,dresseur);
+        jeu(socket_cli, dresseur);
 	}
+
 	send(socket_cli,"endclose",strlen("endclose"),0);
 	recv(socket_cli,buf,80,0);
 	bzero(buf,80);

@@ -155,11 +155,11 @@ int LibererMap(Map* m)
 
 int CollisionDecor(Map* carte,SDL_Rect* perso, SDL_Surface* screen){
 	
-	Map* carte1;
-	Map* carte2;
+	//Map* carte1;
+	//Map* carte2;
 	
-	carte1 = ChargerMap("level.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
-	carte2 = ChargerMap("tilesetIPMON.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
+	//carte1 = ChargerMap("level.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
+	//carte2 = ChargerMap("tilesetIPMON.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
 
 	int xmin,xmax,ymin,ymax,i,j,indicetile,xminbord,yminbord;
 	xmin = perso->x / carte->LARGEUR_TILE;
@@ -181,37 +181,37 @@ int CollisionDecor(Map* carte,SDL_Rect* perso, SDL_Surface* screen){
 			else if(carte->props[indicetile].combat){
 				return 2;
 			}
-			else if(carte->props[indicetile].changerMap){
-				LibererMap(carte);
+			// else if(carte->props[indicetile].changerMap){
+			// 	LibererMap(carte);
 
-				carte1 = ChargerMap("level.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
-				perso->x = 270;
-				perso->y = 500;
-				perso->w = 25;
-				perso->h = 25;
+			// 	carte1 = ChargerMap("level.txt",LARGEUR_FENETRE,HAUTEUR_FENETRE);
+			// 	perso->x = 270;
+			// 	perso->y = 500;
+			// 	perso->w = 25;
+			// 	perso->h = 25;
 				
-				AfficherMap(carte1,screen,carte1->xscroll,carte1->yscroll);
+			// 	AfficherMap(carte1,screen,carte1->xscroll,carte1->yscroll);
 				
-				return 0;
-			}
+			// 	return 0;
+			// }
 			
 			
 
-			else if(carte1->props[indicetile].changerMap == 2){
+			// else if(carte1->props[indicetile].changerMap == 2){
 
-				LibererMap(carte1);
+			// 	LibererMap(carte1);
 				
 				
-				perso->x =264;
-				perso->y =550;
-				perso->w = 25;
-				perso->h = 25;
+			// 	perso->x =264;
+			// 	perso->y =550;
+			// 	perso->w = 25;
+			// 	perso->h = 25;
 				
-				AfficherMap(carte2,screen,carte2->xscroll,carte2->yscroll);
+			// 	AfficherMap(carte2,screen,carte2->xscroll,carte2->yscroll);
 				
-				printf("Changement map");
-				return 0;
-			}
+			// 	printf("Changement map");
+			// 	return 0;
+			// }
 
 		}
 	}

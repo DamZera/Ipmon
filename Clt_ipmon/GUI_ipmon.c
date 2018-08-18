@@ -134,31 +134,27 @@ void init_dresseur(){
 }
 
 //DEFAULT nom_map "tilesetIPMON.txt" persox "300" persoy "150"
-void jeu(char* nom_map,int persox, int persoy, int sock, char* pseudo,Dresseur *dresseur){
+void jeu(int sock, Dresseur *dresseur){
 	printf("IN jeu function");
 	joueur = dresseur;
 	
 	struct timeval tv1,tv2;
-	long diff;
+	long elapsed; // ms
 
 	SDL_Rect perso;
 	Coord *persoAvant = malloc(sizeof(Coord));
-	printf("Malloc");
 	SDL_Surface* screen = NULL;
 	SDL_Surface* texte = NULL; 
 	SDL_Surface* dresseurActuel = SDL_LoadBMP("./images/bmp/dresseurbas.bmp");
-	printf("Load BMP");
 	SDL_SetColorKey(dresseurActuel, SDL_SRCCOLORKEY, SDL_MapRGB(dresseurActuel->format, 0, 255, 0));
-	printf("SDL_SetColorKey");
 	dresseur_list_jeu = NULL;
 	
 	TTF_Font *police = NULL;
    	SDL_Color couleurNoire = {0, 0, 0}; //couleur noir
 	TTF_Init();
-	printf("TTF_Init");
 	police = TTF_OpenFont("./arial.ttf", 12); // police
-	texte = TTF_RenderText_Blended(police, pseudo, couleurNoire); // ecriture du texte (exemple)
-	printf("TTF_render");
+	texte = TTF_RenderText_Blended(police, dresseur->pseudo, couleurNoire); // ecriture du texte (exemple)
+
 	
 	SDL_Event event;
 	Map* carte;
@@ -170,12 +166,12 @@ void jeu(char* nom_map,int persox, int persoy, int sock, char* pseudo,Dresseur *
 	HAUTEUR_TILE = 25;
 	memset(&in,0,sizeof(in));
 		
-	screen = SDL_SetVideoMode(LARGEUR_FENETRE,HAUTEUR_FENETRE,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
-	carte = ChargerMap(nom_map,LARGEUR_FENETRE,HAUTEUR_FENETRE);
-	perso.x = persox;
-	perso.y = persoy;
-	persoAvant->x = persox;
-	persoAvant->y = persoy;
+	screen = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	carte = ChargerMap(dresseur->map, LARGEUR_FENETRE, HAUTEUR_FENETRE);
+	perso.x = dresseur->coodX;
+	perso.y = dresseur->coodY;
+	persoAvant->x = dresseur->coodX;
+	persoAvant->y = dresseur->coodY;
 	perso.w = 25;
 	perso.h = 25;
 	
@@ -191,20 +187,22 @@ void jeu(char* nom_map,int persox, int persoy, int sock, char* pseudo,Dresseur *
 	while(!in.key[SDLK_ESCAPE]) //tant qu 'on a pas appuyé sur ESCAPE pour quitter
 	{	
 		gettimeofday(&tv1,NULL);
-		diff= (tv1.tv_sec - tv2.tv_sec);
-		//printf("Diff :: %06ld \n",diff);
+		//diff= (tv2.tv_usec - tv1.tv_usec);
+		elapsed = ((tv1.tv_sec - tv2.tv_sec) * 1000000) + (tv1.tv_usec - tv2.tv_usec);
+		printf("elapsed :: %07ld \n",elapsed);
 		jeuDeplacement(perso,persoAvant,sock);
 		UpdateEvents(&in);
 		Deplace(carte,&perso,vx,vy,LARGEUR_TILE,HAUTEUR_TILE,sock, screen);
 		FocusScrollCenter(carte,&perso);
 		AfficherMap(carte,screen,carte->xscroll,carte->yscroll);
 		DeplacerVecteur(&in,&vx,&vy,&perso,screen,carte->xscroll,carte->yscroll, &dresseurActuel,texte);
-		if(diff>0){
-			dresseur_list_jeu = jeuAfficherDresseurs(sock,nom_map,police);
+		if(elapsed>250000){
+			printf("UPDATE !\n");
+			dresseur_list_jeu = jeuAfficherDresseurs(sock, dresseur->map, police);
 			gettimeofday(&tv2,NULL);
 		}
 		SDL_Flip(screen);
-		SDL_Delay(5);
+		SDL_Delay(20);
 	}
 	LibererMap(carte);
 	SDL_Quit();

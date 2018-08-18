@@ -118,7 +118,7 @@ Dresseur_aff* vider_dresseur_liste(Dresseur_aff *dresseur_list_jeu){
 int jeuCombat(int sock){
 	int combat = 0, idpokemonAdv = 0, end = 0, msg;
 	char buf[80]; bzero(buf,80);
-	char* token;
+	//char* token;
 	
 	combat = rand()%300;
 	
