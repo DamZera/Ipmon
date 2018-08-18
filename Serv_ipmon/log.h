@@ -13,13 +13,11 @@
 
 #include <malloc.h>
 #include <mysql/mysql.h>
-//DEFINE
-#define MAX_CLIENTS 5 
 
+#define MAX_CLIENTS 5 
 #define MAX_SIZE_IPMON_STR 80
 
 
-//gcc -o log log.c -libmysqlclient
 typedef struct Ipmon {
 	int id;
 	char nom[MAX_SIZE_IPMON_STR];

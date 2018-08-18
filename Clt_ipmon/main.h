@@ -52,8 +52,8 @@ typedef struct Ipmon{
 
 typedef struct Dresseur{
 	char* id;
-	char* pseudo;
-	char* map;
+	char pseudo[100];
+	char map[100];
 	int niveau;
 	int sock;
 	int coodX;
@@ -63,8 +63,8 @@ typedef struct Dresseur{
 	int nombreIpmons;
 }Dresseur;
 
-void cb_quit (GtkWidget *p_widget, gpointer user_data);
-void bouton_connect_clicked(GtkWidget *widget, gpointer data);
+gboolean cb_quit (GtkWidget *p_widget, gpointer user_data);
+gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data);
 void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data);
 
 

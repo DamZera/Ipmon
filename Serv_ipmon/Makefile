@@ -1,5 +1,5 @@
 all: jeu_serv.o mysql_ipmon.o log.o
-	gcc jeu_serv.o mysql_ipmon.o log.o -o Serveur_ipm -L/usr/local/mysql/lib -lmysqlclient -lpthread 
+	gcc -Wall jeu_serv.o mysql_ipmon.o log.o -o Serveur_ipm -L/usr/local/mysql/lib -lmysqlclient -lpthread 
 
 log.o: log.c log.h mysql_ipmon.h jeu_serv.h
 	gcc -c log.c -o log.o 

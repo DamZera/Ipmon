@@ -10,8 +10,8 @@ MYSQL *connect_bdd(){
 
     if(mysql_real_connect(mysql,
     		"localhost", //IP de la bdd
-    		"root", 	 //User
-    		"root", 		 //Pass
+    		"ipmon", 	 //User
+    		"ipmon", 		 //Pass
     		"ipmon", 	 //Bdd
     		8889,0,0)){
     	printf("Connexion sucess !!\n");

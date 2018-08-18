@@ -135,6 +135,7 @@ void init_dresseur(){
 
 //DEFAULT nom_map "tilesetIPMON.txt" persox "300" persoy "150"
 void jeu(char* nom_map,int persox, int persoy, int sock, char* pseudo,Dresseur *dresseur){
+	printf("IN jeu function");
 	joueur = dresseur;
 	
 	struct timeval tv1,tv2;
@@ -142,17 +143,22 @@ void jeu(char* nom_map,int persox, int persoy, int sock, char* pseudo,Dresseur *
 
 	SDL_Rect perso;
 	Coord *persoAvant = malloc(sizeof(Coord));
+	printf("Malloc");
 	SDL_Surface* screen = NULL;
 	SDL_Surface* texte = NULL; 
 	SDL_Surface* dresseurActuel = SDL_LoadBMP("./images/bmp/dresseurbas.bmp");
+	printf("Load BMP");
 	SDL_SetColorKey(dresseurActuel, SDL_SRCCOLORKEY, SDL_MapRGB(dresseurActuel->format, 0, 255, 0));
+	printf("SDL_SetColorKey");
 	dresseur_list_jeu = NULL;
 	
 	TTF_Font *police = NULL;
    	SDL_Color couleurNoire = {0, 0, 0}; //couleur noir
 	TTF_Init();
+	printf("TTF_Init");
 	police = TTF_OpenFont("./arial.ttf", 12); // police
 	texte = TTF_RenderText_Blended(police, pseudo, couleurNoire); // ecriture du texte (exemple)
+	printf("TTF_render");
 	
 	SDL_Event event;
 	Map* carte;
