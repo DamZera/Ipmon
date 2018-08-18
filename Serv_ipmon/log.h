@@ -11,34 +11,36 @@
 #include <netinet/in.h>
 #include <pthread.h>
 
-#include <sys/malloc.h>
+#include <malloc.h>
 #include <mysql/mysql.h>
 //DEFINE
 #define MAX_CLIENTS 5 
+
+#define MAX_SIZE_IPMON_STR 80
 
 
 //gcc -o log log.c -libmysqlclient
 typedef struct Ipmon {
 	int id;
-	char* nom;
-	char* etat;
-	char* type;
+	char nom[MAX_SIZE_IPMON_STR];
+	char etat[MAX_SIZE_IPMON_STR];
+	char type[MAX_SIZE_IPMON_STR];
 	int typeEntier; //Valeur du type d'ipmon : intervient dans le calcul du succès ou non d'une attaque
 	int pv; //Point de vie
 	int agilite; //Rapidité de reaction d'un ipmon
 	int niveau; //Niveau de l'ipmon : intervient dans le calcul du degat subit par un ipmon [1 - 100]
 	int puissance_attaque; //Puissance d'attaque simple
-	char* nom_attaque;
+	char nom_attaque[MAX_SIZE_IPMON_STR];
 	int precision_attaque;//Précision de l'attaque simple
 	int puissance_defense; //Puissance de defense : intervient dans le calcul du degat subit par un ipmon
-	char* nom_defense;
+	char nom_defense[MAX_SIZE_IPMON_STR];
 	int esquive; //Capacité d'esquive d'un ipmon : intervient dans le calcul du succès ou non d'une attaque = 100
 	int precision; //Précision de l'ipmon
 	int puissance_attaque_special;//Puissance de l'attaque spéciale d'un ipmon
 	int precision_attaque_special;//Précision de l'attaque spéciale d'un ipmon
-	char* nom_attaque_special;
+	char nom_attaque_special[MAX_SIZE_IPMON_STR];
 	int puissance_defense_special;//Puissance de la défense spéciale d'un ipmon : intervient lorsqu'un ipmon est attaqué par une attaque spéciale
-	char* nom_defense_special;
+	char nom_defense_special[MAX_SIZE_IPMON_STR];
 }Ipmon;
 
 typedef struct Dresseur{
@@ -54,8 +56,8 @@ typedef struct Dresseur{
 }Dresseur;
 
 typedef struct Message{
-	char code [50];
-	char data [50];
+	char code [4];
+	char data [100];
 }Message;
 
 

@@ -1,7 +1,9 @@
 #include "jeu.h"
+
 int test = 0;
 Dresseur_aff *dresseur_list_jeu;
 Dresseur* joueur;
+
 void jeuDeplacement(SDL_Rect perso, Coord *persoAvant, int sock){
 	char buf[80];
 	bzero(buf,80);
@@ -150,108 +152,110 @@ int jeuCombat(int sock){
 }
 
 int affichage_combat(int msg, int sock){
-	char buf[80];
-	char* token;
-	int choix_ipmon;
-	Ipmon *ipmon = joueur->ipmons;
-	Ipmon *ipmon_adv;
-	joueur->niveau = 1;
+	
+	printf("STUBED must be reworked");
+	//char buf[80];
+	//char* token;
+	//int choix_ipmon;
+	//Ipmon *ipmon = joueur->ipmons;
+	//Ipmon *ipmon_adv;
+	//joueur->niveau = 1;
 
-	switch(msg){
-		case 1:	printf("**************************************\n");
-				printf("Dresseur : \n\tPseudo : %s\n\tNiveau : %d\n", joueur->pseudo, joueur->niveau);
+	// switch(msg){
+	// 	case 1:	printf("**************************************\n");
+	// 			printf("Dresseur : \n\tPseudo : %s\n\tNiveau : %d\n", joueur->pseudo, joueur->niveau);
 
-				printf("Liste de tous les ipmons du dresseur\n");
-				while(ipmon != NULL){
-					printf("\n\nIpmon : \n\tId : %d\n\tNom : %s\n\tEtat : %s\n\tType : %s\n\tPoint de vie : %d\n\tAgilité : %d\n\tNiveau : %d\n\tPuissance attaque : %d\n\tNom attaque : %s\n\tPuissance défense : %d\n\t", ipmon->id, ipmon->nom, ipmon->etat, ipmon->type, ipmon->pv, ipmon->agilite, ipmon->niveau, ipmon->puissance_attaque, ipmon->nom_attaque, ipmon->puissance_defense);
-					ipmon = ipmon->next;
-				}
-				printf("Entrer l'id du pokemon choisi :\n");
-			scanf("%d",&choix_ipmon);
-			sprintf(buf,"%d",choix_ipmon);
-			send(sock,buf,strlen(buf),0);
-			break;
-		case 2:
-			recv(sock,buf,80,0);
-			token = strtok(buf, ":");
-			ipmon_adv->id = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->nom = token;
-			token = strtok(NULL, ":");
-			ipmon_adv->etat = token;
-			token = strtok(NULL, ":");
-			ipmon_adv->type = token;
-			token = strtok(NULL, ":");
-			ipmon_adv->typeEntier = strtol(token,NULL,10);
-			token = NULL;
+	// 			printf("Liste de tous les ipmons du dresseur\n");
+	// 			while(ipmon != NULL){
+	// 				printf("\n\nIpmon : \n\tId : %d\n\tNom : %s\n\tEtat : %s\n\tType : %s\n\tPoint de vie : %d\n\tAgilité : %d\n\tNiveau : %d\n\tPuissance attaque : %d\n\tNom attaque : %s\n\tPuissance défense : %d\n\t", ipmon->id, ipmon->nom, ipmon->etat, ipmon->type, ipmon->pv, ipmon->agilite, ipmon->niveau, ipmon->puissance_attaque, ipmon->nom_attaque, ipmon->puissance_defense);
+	// 				ipmon = ipmon->next;
+	// 			}
+	// 			printf("Entrer l'id du pokemon choisi :\n");
+	// 		scanf("%d",&choix_ipmon);
+	// 		sprintf(buf,"%d",choix_ipmon);
+	// 		send(sock,buf,strlen(buf),0);
+	// 		break;
+	// 	case 2:
+	// 		recv(sock,buf,80,0);
+	// 		token = strtok(buf, ":");
+	// 		ipmon_adv->id = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->nom = token;
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->etat = token;
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->type = token;
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->typeEntier = strtol(token,NULL,10);
+	// 		token = NULL;
 
 
-			bzero(buf,80);
-			send(sock,"recu",strlen("recu"),0);
-			recv(sock,buf,80,0);
-			token = strtok(buf, ":");
-			ipmon_adv->pv = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->agilite = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->niveau = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->puissance_attaque = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->nom_attaque = token;
-			token = NULL;
+	// 		bzero(buf,80);
+	// 		send(sock,"recu",strlen("recu"),0);
+	// 		recv(sock,buf,80,0);
+	// 		token = strtok(buf, ":");
+	// 		ipmon_adv->pv = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->agilite = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->niveau = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->puissance_attaque = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->nom_attaque = token;
+	// 		token = NULL;
 
-			bzero(buf,80);
-			send(sock,"recu",strlen("recu"),0);
-			recv(sock,buf,80,0);
-			token = strtok(buf, ":");
-			ipmon_adv->precision_attaque = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->puissance_defense = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->nom_defense = token;
-			token = strtok(NULL, ":");
-			ipmon_adv->esquive = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->precision = strtol(token,NULL,10);
-			token = NULL;
+	// 		bzero(buf,80);
+	// 		send(sock,"recu",strlen("recu"),0);
+	// 		recv(sock,buf,80,0);
+	// 		token = strtok(buf, ":");
+	// 		ipmon_adv->precision_attaque = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->puissance_defense = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->nom_defense = token;
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->esquive = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->precision = strtol(token,NULL,10);
+	// 		token = NULL;
 
-			bzero(buf,80);
-			send(sock,"recu",strlen("recu"),0);
-			recv(sock,buf,80,0);
-			token = strtok(buf, ":");
-			ipmon_adv->puissance_attaque_special = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->precision_attaque_special = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->nom_attaque_special = token;
-			token = strtok(NULL, ":");
-			ipmon_adv->puissance_defense_special = strtol(token,NULL,10);
-			token = strtok(NULL, ":");
-			ipmon_adv->nom_defense_special = token;
-			token = NULL;
+	// 		bzero(buf,80);
+	// 		send(sock,"recu",strlen("recu"),0);
+	// 		recv(sock,buf,80,0);
+	// 		token = strtok(buf, ":");
+	// 		ipmon_adv->puissance_attaque_special = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->precision_attaque_special = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->nom_attaque_special = token;
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->puissance_defense_special = strtol(token,NULL,10);
+	// 		token = strtok(NULL, ":");
+	// 		ipmon_adv->nom_defense_special = token;
+	// 		token = NULL;
 
-			bzero(buf,80);
-			printf("\nIpmon sauvage : \n\tId : %d\n\tNom : %s\n\tEtat : %s\n\tType : %s\n\tPoint de vie : %d\n\tAgilité : %d\n\tNiveau : %d\n\tPuissance attaque : %d\n\tNom attaque : %s\n\tPuissance défense : %d\n\tNom défense : %s\n\t", ipmon_adv->id, ipmon_adv->nom, ipmon_adv->etat, ipmon_adv->type, ipmon_adv->pv, ipmon_adv->agilite, ipmon_adv->niveau, ipmon_adv->puissance_attaque, ipmon_adv->nom_attaque, ipmon_adv->puissance_defense, ipmon_adv->nom_defense);
-			printf("Entrer l'id du pokemon choisi :\n");
-			scanf("%d",&choix_ipmon);
-			sprintf(buf,"%d",choix_ipmon);
-			send(sock,buf,strlen(buf),0);
-			break;
-		case 3:
-			printf("Appuyer: 1 pour faire une attaque simple, 2 pour une attaque spéciale et 0 pour abandonner!\n");
-			scanf("%d", &choix_ipmon);
-			sprintf(buf,"%d",choix_ipmon);
-			send(sock,buf,strlen(buf),0);
-			break;
-		case 4:
-			printf("Si vous abandonnez, vous allez perdre le combat; Voulez-vous quitter ? y/n\n");
-			char c;
-			scanf("%c", &c);
-			sprintf(buf,"%c", c);
-			send(sock,buf,strlen(buf),0);
-		default:
+	// 		bzero(buf,80);
+	// 		printf("\nIpmon sauvage : \n\tId : %d\n\tNom : %s\n\tEtat : %s\n\tType : %s\n\tPoint de vie : %d\n\tAgilité : %d\n\tNiveau : %d\n\tPuissance attaque : %d\n\tNom attaque : %s\n\tPuissance défense : %d\n\tNom défense : %s\n\t", ipmon_adv->id, ipmon_adv->nom, ipmon_adv->etat, ipmon_adv->type, ipmon_adv->pv, ipmon_adv->agilite, ipmon_adv->niveau, ipmon_adv->puissance_attaque, ipmon_adv->nom_attaque, ipmon_adv->puissance_defense, ipmon_adv->nom_defense);
+	// 		printf("Entrer l'id du pokemon choisi :\n");
+	// 		scanf("%d",&choix_ipmon);
+	// 		sprintf(buf,"%d",choix_ipmon);
+	// 		send(sock,buf,strlen(buf),0);
+	// 		break;
+	// 	case 3:
+	// 		printf("Appuyer: 1 pour faire une attaque simple, 2 pour une attaque spéciale et 0 pour abandonner!\n");
+	// 		scanf("%d", &choix_ipmon);
+	// 		sprintf(buf,"%d",choix_ipmon);
+	// 		send(sock,buf,strlen(buf),0);
+	// 		break;
+	// 	case 4:
+	// 		printf("Si vous abandonnez, vous allez perdre le combat; Voulez-vous quitter ? y/n\n");
+	// 		char c;
+	// 		scanf("%c", &c);
+	// 		sprintf(buf,"%c", c);
+	// 		send(sock,buf,strlen(buf),0);
+	// 	default:
 
-			break;
-	}
+	// 		break;
+	// }
 }

@@ -612,152 +612,152 @@ int Combat2Dresseurs (Dresseur dresseur1, Dresseur dresseur2) { //Retourne 1 si 
 
 
 int CombatEquipe (Equipe* equipe1, Equipe* equipe2) {
-	int gagnant;
+	//int gagnant;
 
 	
-	return gagnant;
-}
-
-
-int main () {
-	Dresseur dresseur1, dresseur2;
-	Ipmon ipmon, ipmonDresseur1, ipmonDresseur2;
-
-	dresseur1.pseudo = "Moussier";
-	dresseur1.niveau = 3;
-	dresseur1.nombreIpmons = 1;
-
-	dresseur2.pseudo = "Dinar";
-	dresseur2.niveau = 3;
-	dresseur2.nombreIpmons = 1;
-
-	ipmon.id = 1;
-	ipmon.nom = "Gaga";
-	ipmon.etat = "sauvage";
-	ipmon.type = "Feu";
-	ipmon.typeEntier = 3;
-	ipmon.pv = 103;
-	ipmon.agilite = 50;
-	ipmon.niveau = 30;
-	ipmon.puissance_attaque = 87;
-	ipmon.nom_attaque = "Tornade de feu";
-	ipmon.precision_attaque = 34;
-	ipmon.puissance_defense = 90;
-	ipmon.nom_defense = "Defense suprême de feu";
-	ipmon.esquive = 100;
-	ipmon.precision = 4;
-	ipmon.puissance_attaque_special = 95;
-	ipmon.nom_attaque_special = "Mega Tornade de feu";
-	ipmon.precision_attaque_special = 6;
-	ipmon.puissance_defense_special = 99;
-	ipmon.nom_defense_special = "Mega Defense suprême de feu";
-
-	ipmonDresseur1.id = 2;
-	ipmonDresseur1.nom = "Gogo";
-	ipmonDresseur1.etat = "capturé";
-	ipmonDresseur1.type = "Eau";
-	ipmonDresseur1.typeEntier = 3;
-	ipmonDresseur1.pv = 320;
-	ipmonDresseur1.agilite = 30;
-	ipmonDresseur1.niveau = 30;
-	ipmonDresseur1.puissance_attaque = 50;
-	ipmonDresseur1.nom_attaque = "Pluie de bulle";
-	ipmonDresseur1.precision_attaque = 34;
-	ipmonDresseur1.puissance_defense = 98;
-	ipmonDresseur1.nom_defense = "Grand Ouragan";
-	ipmonDresseur1.esquive = 100;
-	ipmonDresseur1.precision = 4;
-	ipmonDresseur1.puissance_attaque_special = 170;
-	ipmonDresseur1.nom_attaque_special = "Mega Pluie de bulle";
-	ipmonDresseur1.precision_attaque_special = 56;
-	ipmonDresseur1.puissance_defense_special = 105;
-	ipmonDresseur1.nom_defense_special = "Mega Grand Ouragan";
-
-	ipmonDresseur2.id = 3;
-	ipmonDresseur2.nom = "Biju";
-	ipmonDresseur2.etat = "capturé";
-	ipmonDresseur2.type = "Plante";
-	ipmonDresseur2.typeEntier = 3;
-	ipmonDresseur2.pv = 120;
-	ipmonDresseur2.agilite = 30;
-	ipmonDresseur2.niveau = 30;
-	ipmonDresseur2.puissance_attaque = 50;
-	ipmonDresseur2.nom_attaque = "Etranglement des 1000 branches";
-	ipmonDresseur2.precision_attaque = 34;
-	ipmonDresseur2.puissance_defense = 98;
-	ipmonDresseur2.nom_defense = "Forêt Vivante";
-	ipmonDresseur2.esquive = 100;
-	ipmonDresseur2.precision = 4;
-	ipmonDresseur2.puissance_attaque_special = 170;
-	ipmonDresseur2.nom_attaque_special = "Super Etranglement des 1000 branches";
-	ipmonDresseur2.precision_attaque_special = 56;
-	ipmonDresseur2.puissance_defense_special = 105;
-	ipmonDresseur2.nom_defense_special = "Mega Forêt géante";
-
-	dresseur1.ipmons[0] = ipmon;
-	dresseur2.ipmons[0] = ipmonDresseur2;
-	int choix;
-	do {	
-		printf("************************************\n");
-		printf("1 - Combat Dresseur vs Ipmon sauvage\n");
-		printf("2 - Combat Dresseur vs Dresseur\n");
-		printf("3 - Combat en équipe\n");
-		printf("4 - Echange d'ipmons\n");
-		printf("5 - Infos dresseurs\n");
-		scanf ("%d", &choix);
-		viderBuffer ();
-	} while (choix < 1 && choix > 5);
-
-	int c = -1;
-	if (choix == 1) 
-		c = CombatDresseurIpmon (dresseur1, ipmon);
-	else if (choix == 2)
-		c = Combat2Dresseurs (dresseur1, dresseur2);
-	else if (choix == 3)
-		printf("Ce combat n'est pas encore pris en charge\n");
-	else if (choix == 4) {
-		printf("Avant\n");
-		printf("Dresseur1 : %s\n", dresseur1.pseudo);
-		int i;
-		for (i = 0; i < dresseur1.nombreIpmons; i++) {
-			printf("%s\n", dresseur1.ipmons[i].nom);
-		}
-		printf("\n");
-		printf("Dresseur2 : %s\n", dresseur2.pseudo);
-		for (i = 0; i < dresseur2.nombreIpmons; i++) {
-			printf("%s\n", dresseur2.ipmons[i].nom);
-		}
-		EchangerIpmons (&dresseur1, &dresseur2, ipmon, ipmonDresseur2);
-		printf("Après\n");
-		printf("Dresseur1 : %s\n", dresseur1.pseudo);
-		for (i = 0; i < dresseur1.nombreIpmons; i++) {
-			printf("%s\n", dresseur1.ipmons[i].nom);
-		}
-		printf("\n");
-		printf("Dresseur2 : %s\n", dresseur2.pseudo);
-		for (i = 0; i < dresseur2.nombreIpmons; i++) {
-			printf("%s\n", dresseur2.ipmons[i].nom);
-		}
-	}
-	else if (choix == 5) 
-		recupererInfoDresseurs ();
-
-	if (choix == 1) {
-		if (c == 0)
-			printf("c = %d Match nul\n", c);
-		else if (c == 1)
-			printf("Ipmon sauvage %s K.O. !!!    %s a gagné\n", ipmon.nom, dresseur1.pseudo);
-		else
-			printf("%s K.O.    !!!!    L'ipmon sauvage %s a gagné\n", dresseur2.pseudo, ipmon.nom);
-		}
-	else if (choix == 2) {
-		if (c == 0)
-			printf("c = %d Match nul\n", c);
-		else if (c == 1)
-			printf("%s K.O. !!!    %s a gagné\n", dresseur2.pseudo, dresseur1.pseudo);
-		else
-			printf("%s K.O.    !!!!    %s a gagné\n", dresseur1.pseudo, dresseur2.pseudo);
-	}
-
 	return 0;
 }
+
+
+// int main () {
+// 	Dresseur dresseur1, dresseur2;
+// 	Ipmon ipmon, ipmonDresseur1, ipmonDresseur2;
+
+// 	dresseur1.pseudo = "Moussier";
+// 	dresseur1.niveau = 3;
+// 	dresseur1.nombreIpmons = 1;
+
+// 	dresseur2.pseudo = "Dinar";
+// 	dresseur2.niveau = 3;
+// 	dresseur2.nombreIpmons = 1;
+
+// 	ipmon.id = 1;
+// 	ipmon.nom = "Gaga";
+// 	ipmon.etat = "sauvage";
+// 	ipmon.type = "Feu";
+// 	ipmon.typeEntier = 3;
+// 	ipmon.pv = 103;
+// 	ipmon.agilite = 50;
+// 	ipmon.niveau = 30;
+// 	ipmon.puissance_attaque = 87;
+// 	ipmon.nom_attaque = "Tornade de feu";
+// 	ipmon.precision_attaque = 34;
+// 	ipmon.puissance_defense = 90;
+// 	ipmon.nom_defense = "Defense suprême de feu";
+// 	ipmon.esquive = 100;
+// 	ipmon.precision = 4;
+// 	ipmon.puissance_attaque_special = 95;
+// 	ipmon.nom_attaque_special = "Mega Tornade de feu";
+// 	ipmon.precision_attaque_special = 6;
+// 	ipmon.puissance_defense_special = 99;
+// 	ipmon.nom_defense_special = "Mega Defense suprême de feu";
+
+// 	ipmonDresseur1.id = 2;
+// 	ipmonDresseur1.nom = "Gogo";
+// 	ipmonDresseur1.etat = "capturé";
+// 	ipmonDresseur1.type = "Eau";
+// 	ipmonDresseur1.typeEntier = 3;
+// 	ipmonDresseur1.pv = 320;
+// 	ipmonDresseur1.agilite = 30;
+// 	ipmonDresseur1.niveau = 30;
+// 	ipmonDresseur1.puissance_attaque = 50;
+// 	ipmonDresseur1.nom_attaque = "Pluie de bulle";
+// 	ipmonDresseur1.precision_attaque = 34;
+// 	ipmonDresseur1.puissance_defense = 98;
+// 	ipmonDresseur1.nom_defense = "Grand Ouragan";
+// 	ipmonDresseur1.esquive = 100;
+// 	ipmonDresseur1.precision = 4;
+// 	ipmonDresseur1.puissance_attaque_special = 170;
+// 	ipmonDresseur1.nom_attaque_special = "Mega Pluie de bulle";
+// 	ipmonDresseur1.precision_attaque_special = 56;
+// 	ipmonDresseur1.puissance_defense_special = 105;
+// 	ipmonDresseur1.nom_defense_special = "Mega Grand Ouragan";
+
+// 	ipmonDresseur2.id = 3;
+// 	ipmonDresseur2.nom = "Biju";
+// 	ipmonDresseur2.etat = "capturé";
+// 	ipmonDresseur2.type = "Plante";
+// 	ipmonDresseur2.typeEntier = 3;
+// 	ipmonDresseur2.pv = 120;
+// 	ipmonDresseur2.agilite = 30;
+// 	ipmonDresseur2.niveau = 30;
+// 	ipmonDresseur2.puissance_attaque = 50;
+// 	ipmonDresseur2.nom_attaque = "Etranglement des 1000 branches";
+// 	ipmonDresseur2.precision_attaque = 34;
+// 	ipmonDresseur2.puissance_defense = 98;
+// 	ipmonDresseur2.nom_defense = "Forêt Vivante";
+// 	ipmonDresseur2.esquive = 100;
+// 	ipmonDresseur2.precision = 4;
+// 	ipmonDresseur2.puissance_attaque_special = 170;
+// 	ipmonDresseur2.nom_attaque_special = "Super Etranglement des 1000 branches";
+// 	ipmonDresseur2.precision_attaque_special = 56;
+// 	ipmonDresseur2.puissance_defense_special = 105;
+// 	ipmonDresseur2.nom_defense_special = "Mega Forêt géante";
+
+// 	dresseur1.ipmons[0] = ipmon;
+// 	dresseur2.ipmons[0] = ipmonDresseur2;
+// 	int choix;
+// 	do {	
+// 		printf("************************************\n");
+// 		printf("1 - Combat Dresseur vs Ipmon sauvage\n");
+// 		printf("2 - Combat Dresseur vs Dresseur\n");
+// 		printf("3 - Combat en équipe\n");
+// 		printf("4 - Echange d'ipmons\n");
+// 		printf("5 - Infos dresseurs\n");
+// 		scanf ("%d", &choix);
+// 		viderBuffer ();
+// 	} while (choix < 1 && choix > 5);
+
+// 	int c = -1;
+// 	if (choix == 1) 
+// 		c = CombatDresseurIpmon (dresseur1, ipmon);
+// 	else if (choix == 2)
+// 		c = Combat2Dresseurs (dresseur1, dresseur2);
+// 	else if (choix == 3)
+// 		printf("Ce combat n'est pas encore pris en charge\n");
+// 	else if (choix == 4) {
+// 		printf("Avant\n");
+// 		printf("Dresseur1 : %s\n", dresseur1.pseudo);
+// 		int i;
+// 		for (i = 0; i < dresseur1.nombreIpmons; i++) {
+// 			printf("%s\n", dresseur1.ipmons[i].nom);
+// 		}
+// 		printf("\n");
+// 		printf("Dresseur2 : %s\n", dresseur2.pseudo);
+// 		for (i = 0; i < dresseur2.nombreIpmons; i++) {
+// 			printf("%s\n", dresseur2.ipmons[i].nom);
+// 		}
+// 		EchangerIpmons (&dresseur1, &dresseur2, ipmon, ipmonDresseur2);
+// 		printf("Après\n");
+// 		printf("Dresseur1 : %s\n", dresseur1.pseudo);
+// 		for (i = 0; i < dresseur1.nombreIpmons; i++) {
+// 			printf("%s\n", dresseur1.ipmons[i].nom);
+// 		}
+// 		printf("\n");
+// 		printf("Dresseur2 : %s\n", dresseur2.pseudo);
+// 		for (i = 0; i < dresseur2.nombreIpmons; i++) {
+// 			printf("%s\n", dresseur2.ipmons[i].nom);
+// 		}
+// 	}
+// 	else if (choix == 5) 
+// 		recupererInfoDresseurs ();
+
+// 	if (choix == 1) {
+// 		if (c == 0)
+// 			printf("c = %d Match nul\n", c);
+// 		else if (c == 1)
+// 			printf("Ipmon sauvage %s K.O. !!!    %s a gagné\n", ipmon.nom, dresseur1.pseudo);
+// 		else
+// 			printf("%s K.O.    !!!!    L'ipmon sauvage %s a gagné\n", dresseur2.pseudo, ipmon.nom);
+// 		}
+// 	else if (choix == 2) {
+// 		if (c == 0)
+// 			printf("c = %d Match nul\n", c);
+// 		else if (c == 1)
+// 			printf("%s K.O. !!!    %s a gagné\n", dresseur2.pseudo, dresseur1.pseudo);
+// 		else
+// 			printf("%s K.O.    !!!!    %s a gagné\n", dresseur1.pseudo, dresseur2.pseudo);
+// 	}
+
+// 	return 0;
+// }

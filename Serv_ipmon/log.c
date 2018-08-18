@@ -9,27 +9,6 @@ Dresseur *dresseur_list = NULL;
 /*Mutex pour les zones critiques*/
 pthread_mutex_t mutex_client = PTHREAD_MUTEX_INITIALIZER;
 
-/*Fonction qui extrait une sous chaine d'une chaine source*/
-char *str_sub (const char *s, unsigned int start, unsigned int end){
-   char *new_s = NULL;
-
-   if (s != NULL && start < end){
-      new_s = malloc (sizeof (*new_s) * (end - start + 2));
-      if (new_s != NULL){
-         int i;
-         for (i = start; i <= end; i++){
-            new_s[i-start] = s[i];
-         }
-         new_s[i-start] = '\0';
-      }
-      else{
-         fprintf (stderr, "Memoire insuffisante\n");
-         exit (EXIT_FAILURE);
-      }
-   }
-   return new_s;
-}
-
 Dresseur* chercher_dresseur(Dresseur *dresseur_list,int socket){
 	Dresseur* dresseur = dresseur_list;
 	while(dresseur != NULL){
@@ -75,25 +54,25 @@ Ipmon* cree_Ipmon(int id, char* nom, char* etat, char* type, int typeEntier 	, i
 	Ipmon* ipmon = malloc(sizeof(Ipmon));
 
 	ipmon->id = id;
-	ipmon->nom = nom;
-	ipmon->etat = etat;
-	ipmon->type = type;
+	snprintf(ipmon->nom, MAX_SIZE_IPMON_STR, "%s", nom);
+	snprintf(ipmon->etat, MAX_SIZE_IPMON_STR, "%s", etat);
+	snprintf(ipmon->type, MAX_SIZE_IPMON_STR, "%s", type);
 	ipmon->typeEntier = typeEntier; 
 	ipmon->pv = pv; 
 	ipmon->agilite = agilite; 
 	ipmon->niveau = niveau; 
 	ipmon->puissance_attaque = puissance_attaque; 
-	ipmon->nom_attaque = nom_attaque;
+	snprintf(ipmon->nom_attaque, MAX_SIZE_IPMON_STR, "%s", nom_attaque);
 	ipmon->precision_attaque = precision_attaque;
 	ipmon->puissance_defense = puissance_defense; 
-	ipmon->nom_defense = nom_defense;
+	snprintf(ipmon->nom_defense, MAX_SIZE_IPMON_STR, "%s", nom_defense);
 	ipmon->esquive = esquive; 
 	ipmon->precision = precision;
 	ipmon->puissance_attaque_special = puissance_attaque_special;
 	ipmon->precision_attaque_special = precision_attaque_special;
-	ipmon->nom_attaque_special = nom_attaque_special;
+	snprintf(ipmon->nom_attaque_special, MAX_SIZE_IPMON_STR, "%s", nom_attaque_special);
 	ipmon->puissance_defense_special = puissance_defense_special;
-	ipmon->nom_defense_special = nom_defense_special;
+	snprintf(ipmon->nom_defense_special, MAX_SIZE_IPMON_STR, "%s", nom_defense_special);
 
 	return ipmon;
 }
@@ -131,8 +110,8 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
 	Dresseur* dresseur = chercher_dresseur(dresseur_list, s_dial);
 	char requete[150];
 	int i;
-	char buf[80];
-	bzero(buf,80);
+	char buf[MAX_SIZE_IPMON_STR];
+	bzero(buf,MAX_SIZE_IPMON_STR);
 	Ipmon* ipmon_adv = malloc(sizeof(Ipmon));
 	MYSQL_RES *result;
 	MYSQL_ROW row;
@@ -145,22 +124,17 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
 	} 
 	result = mysql_store_result(ipmon_bdd);
 	row = mysql_fetch_row(result);
-	ipmon_adv->nom = malloc(sizeof(char)*50);
-	ipmon_adv->etat = malloc(sizeof(char)*50);
-	ipmon_adv->type = malloc(sizeof(char)*50);
-	ipmon_adv->nom_attaque = malloc(sizeof(char)*50);
-	ipmon_adv->nom_attaque_special = malloc(sizeof(char)*50);
 	while(row){
 		for(i=0;i<20;i++)
 			printf("%s ",row[i]);
 		printf("\n"); 
 		ipmon_adv->id = strtol(row[3],NULL,10);ipmon_adv->typeEntier = strtol(row[7],NULL,10);
 		
-		ipmon_adv->nom = row[4];
-		ipmon_adv->etat = row[5];
-		ipmon_adv->type = row[6];
-		ipmon_adv->nom_attaque = row[12];
-		ipmon_adv->nom_attaque_special = row[18];
+		snprintf(ipmon_adv->nom, MAX_SIZE_IPMON_STR, "%s", row[4]);
+		snprintf(ipmon_adv->etat, MAX_SIZE_IPMON_STR, "%s", row[5]);
+		snprintf(ipmon_adv->type, MAX_SIZE_IPMON_STR, "%s", row[6]);
+		snprintf(ipmon_adv->nom_attaque, MAX_SIZE_IPMON_STR, "%s", row[12]);
+		snprintf(ipmon_adv->nom_attaque_special, MAX_SIZE_IPMON_STR, "%s", row[18]);
 		
 		
 		ipmon_adv->pv = strtol(row[8],NULL,10);ipmon_adv->agilite = strtol(row[9],NULL,10);ipmon_adv->niveau = strtol(row[1],NULL,10);ipmon_adv->puissance_attaque = strtol(row[10],NULL,10);
@@ -168,27 +142,29 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
 		ipmon_adv->precision_attaque = strtol(row[11],NULL,10);ipmon_adv->puissance_defense = strtol(row[13],NULL,10);ipmon_adv->esquive = strtol(row[14],NULL,10);ipmon_adv->precision = strtol(row[15],NULL,10);
 	
 		ipmon_adv->puissance_attaque_special = strtol(row[16],NULL,10);ipmon_adv->precision_attaque_special = strtol(row[17],NULL,10);ipmon_adv->puissance_defense_special = strtol(row[19],NULL,10);
-		
-		printf("%d:%s:%s:%s:%d\n",ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier);
-		sprintf(buf,"%d:%s:%s:%s:%d",ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier);
-		send(s_dial,buf,80,0);
-		bzero(buf,80);
-		recv(s_dial,buf,80,0);
-		bzero(buf,80);
-		sprintf(buf,"%d:%d:%d:%d:%s",ipmon_adv->pv,ipmon_adv->agilite,ipmon_adv->niveau,ipmon_adv->puissance_attaque,ipmon_adv->nom_attaque);
-		send(s_dial,buf,80,0);
-		bzero(buf,80);
-		recv(s_dial,buf,80,0);
-		bzero(buf,80);
-		sprintf(buf,"%d:%d:%d:%d",ipmon_adv->precision_attaque,ipmon_adv->puissance_attaque,ipmon_adv->esquive,ipmon_adv->precision);
-		send(s_dial,buf,80,0);
-		bzero(buf,80);
-		recv(s_dial,buf,80,0);
-		bzero(buf,80);
-		sprintf(buf,"%d:%d:%s:%d",ipmon_adv->puissance_attaque_special,ipmon_adv->precision_attaque_special,ipmon_adv->nom_attaque_special,ipmon_adv->puissance_defense_special);
-		send(s_dial,buf,80,0);
-		bzero(buf,80);
-		recv(s_dial,buf,80,0);
+
+		// MY EYES please need rework
+
+		// printf("%d:%s:%s:%s:%d\n",ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier);
+		// sprintf(buf,"%d:%s:%s:%s:%d",ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier);
+		// send(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// recv(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// sprintf(buf,"%d:%d:%d:%d:%s",ipmon_adv->pv,ipmon_adv->agilite,ipmon_adv->niveau,ipmon_adv->puissance_attaque,ipmon_adv->nom_attaque);
+		// send(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// recv(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// sprintf(buf,"%d:%d:%d:%d",ipmon_adv->precision_attaque,ipmon_adv->puissance_attaque,ipmon_adv->esquive,ipmon_adv->precision);
+		// send(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// recv(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// sprintf(buf,"%d:%d:%s:%d",ipmon_adv->puissance_attaque_special,ipmon_adv->precision_attaque_special,ipmon_adv->nom_attaque_special,ipmon_adv->puissance_defense_special);
+		// send(s_dial,buf,MAX_SIZE_IPMON_STR,0);
+		// bzero(buf,MAX_SIZE_IPMON_STR);
+		// recv(s_dial,buf,MAX_SIZE_IPMON_STR,0);
 		row = mysql_fetch_row(result);
 	}
 	send(s_dial,"end",strlen("end"),0);
@@ -238,8 +214,8 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd){
 	bzero (buf, TAILLE_BUFF) ;
 
 	while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
-		strcpy(msg->code, str_sub(buf, 0, 2));
-		strcpy(msg->data, str_sub(buf, 3, strlen(buf)));
+		snprintf(msg->code, 4, "%s", buf);
+		snprintf(msg->data, 100, "%s", buf+3);
 #if (DEBUG >0)
 		printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
 #endif
@@ -274,9 +250,9 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd){
 				coodX = strtol(row[5],NULL,10);
 				coodY = strtol(row[6],NULL,10);
 				dresseur_list = ajouter_dresseur(dresseur_list, *s_dial, pseudo,coodX,coodY,row[9],strtol(row[0],NULL,10));
-				bzero(buf,80);
+				bzero(buf,MAX_SIZE_IPMON_STR);
 				recv(*s_dial, buf, TAILLE_BUFF,0);//recu attente
-				bzero(buf,80);
+				bzero(buf,MAX_SIZE_IPMON_STR);
 				/*envoieIpmonDresseur(*s_dial,ipmon_bdd,dresseur_list);*/
 				
 				
@@ -314,8 +290,8 @@ void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd){
 	bzero (buf, TAILLE_BUFF) ;
 
 	while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
-		strcpy(msg->code, str_sub(buf, 0, 2));
-		strcpy(msg->data, str_sub(buf, 3, strlen(buf)));
+		snprintf(msg->code, 4, "%s", buf);
+		snprintf(msg->data, 100, "%s", buf+3);
 #if (DEBUG >0)
 		printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
 #endif
@@ -397,8 +373,8 @@ void *gerer_client (void *data) {
 		/*On copie le msg dans la structure Message*/
 		bzero(msg->code,50);
 		bzero(msg->data,50);
-		strcpy(msg->code, str_sub(buf, 0, 2));
-		strcpy(msg->data, str_sub(buf, 3, strlen(buf)));
+		snprintf(msg->code, 4, "%s", buf);
+		snprintf(msg->data, 100, "%s", buf+3);
 #if (DEBUG >0)
 		printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
 #endif

@@ -186,8 +186,8 @@ int connect_serv_Ipmon(char* adresse, int port){
 
 void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 	Login *login = data;
-	char *pseudo = (char*)malloc(sizeof(char)*strlen(gtk_entry_get_text(GTK_ENTRY(login->champ_login)))+1);
-	char *pass =(char*)malloc(sizeof(char)*strlen(gtk_entry_get_text(GTK_ENTRY(login->champ_pass)))+1);	
+	char pseudo[50];
+	char pass[50];	
 	char buf [80];
 	int n , endWhile = 0;
 	Message* msg = (Message*)malloc(sizeof(Message));
@@ -200,10 +200,10 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 
 
 	while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
-			bzero(msg->code,50);
-			bzero(msg->data,50);
-			strcpy(msg->code, str_sub(buf, 0, 2));
-			strcpy(msg->data, str_sub(buf, 3, 78));
+			bzero(msg->code,4);
+			bzero(msg->data,77);
+			snprintf(msg->code, 4, "%s", buf);
+			snprintf(msg->data, 77, "%s", buf+3);
 #if (DEBUG >0)
 			printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
 #endif
@@ -242,8 +242,8 @@ void bouton_connect_clicked(GtkWidget *widget, gpointer data){
 	Login *login = data;
 	char buf [80];
 	char* token;
-	char *pseudo = (char*)malloc(sizeof(char)*strlen(gtk_entry_get_text(GTK_ENTRY(login->champ_login)))+1);
-	char *pass =(char*)malloc(sizeof(char)*strlen(gtk_entry_get_text(GTK_ENTRY(login->champ_pass)))+1);	
+	char pseudo[50];
+	char pass[50];	
 		
 	int n , endWhile = 0;
 	Message* msg = (Message*)malloc(sizeof(Message));
@@ -257,8 +257,8 @@ void bouton_connect_clicked(GtkWidget *widget, gpointer data){
 	while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
 			bzero(msg->code,50);
 			bzero(msg->data,50);
-			strcpy(msg->code, str_sub(buf, 0, 2));
-			strcpy(msg->data, str_sub(buf, 3, 78));
+			snprintf(msg->code, 4, "%s", buf);
+			snprintf(msg->data, 77, "%s", buf+3);
 #if (DEBUG >0)
 			printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
 #endif

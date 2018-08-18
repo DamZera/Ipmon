@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include <sys/malloc.h>
+#include <malloc.h>
 #include <gtk/gtk.h>
 
 typedef struct Login{
@@ -23,7 +23,7 @@ typedef struct Login{
 
 typedef struct Message{
 	char code [4];
-	char data [77];
+	char data [100];
 }Message;
 
 typedef struct Ipmon{
