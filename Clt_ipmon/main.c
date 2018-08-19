@@ -8,27 +8,6 @@
 int socket_cli = 0;
 Dresseur *dresseur;
 
-  /*Fonction qui extrait une sous chaine d'une chaine source*/
-char *str_sub (const char *s, unsigned int start, unsigned int end){
-   char *new_s = NULL;
-
-   if (s != NULL && start < end){
-      new_s = malloc (sizeof (*new_s) * (end - start + 2));
-      if (new_s != NULL){
-         int i;
-         for (i = start; i <= end; i++){
-            new_s[i-start] = s[i];
-         }
-         new_s[i-start] = '\0';
-      }
-      else{
-         fprintf (stderr, "Memoire insuffisante\n");
-         exit (EXIT_FAILURE);
-      }
-   }
-   return new_s;
-}
-
 Ipmon* ajouterIpmon(Ipmon* ipmon_list,int id,char* nom,char* etat,char* type,int typeEntier,int pv,int agilite,int niveau,int puissance_attaque,char* nom_attaque,int precision_attaque,int puissance_defense,int esquive,int precision,int puissance_attaque_special,int precision_attaque_special,char* nom_attaque_special,int puissance_defense_special){
 	Ipmon* ipmon = malloc(sizeof(Ipmon));
 	
@@ -237,73 +216,58 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 
 gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
 	Login *login = (Login *)data;
-	char buf [200];
-	char* token;
+	char buffer [200];
+	char *token, *string, *pstring;
 	char pseudo[50];
 	char pass[50];	
 		
-	int n , endWhile = 0;
-	Message* msg = (Message*)malloc(sizeof(Message));
-	bzero(buf, 200);
+	int n ;
 	
+    // TODO strncpy more secure
 	strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
 	strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
 	
-	send(socket_cli, "001connect", strlen("001connect"),0);
-	
-	while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
-        printf ("BEGIN LOOP CONNECT\n");
-		bzero(msg->code,50);
-		bzero(msg->data,50);
-		snprintf(msg->code, 4, "%s", buf);
-		snprintf(msg->data, 77, "%s", buf+3);
-#if (DEBUG >0)
-		printf ("J'ai recu [%s] msg->code : %s msg->data : %s \n", buf, msg->code , msg->data) ;
-#endif
-        bzero(buf, 200);
+    bzero(buffer, 200);
+    snprintf(buffer, 200, "%d:%s:%s", CONNECTION, pseudo, pass);
+    send(socket_cli, buffer, strlen(buffer), 0);
 
-		if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"PSEUDO") == 0)){
-            sprintf(buf,"005%s", pseudo);
-			send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG >0)
-			printf("buff in insert PSEUDO = %s\n", buf);
-#endif
-		}else if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"PASS") == 0)){
-            sprintf(buf,"006%s", pass);
-			send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG >0)
-			printf("buff in insert PASS = %s\n", buf);
-#endif
-		}else if(strcmp(msg->code,"000") == 0){
-			/*On recupere les cood et la map dans la partie data du message*/
-			token = strtok(msg->data, ":");
-			dresseur->coodX = strtol(token, NULL, 10);
-			token = strtok(NULL, ":");
-			dresseur->coodY = strtol(token, NULL, 10);
-			token = strtok(NULL, ":");
-			snprintf(dresseur->map, strlen(token)+1, "%s", token);
-			token = strtok(NULL, ":");
-			printf("Dresseur pseudo : %s x : %d y : %d map : %s\n",pseudo,dresseur->coodX,dresseur->coodY,dresseur->map);
-				
-			printf("connection OK !!!!\n");
-			sprintf(dresseur->pseudo, "%s", pseudo);
-			send(socket_cli,"recu",strlen("recu"),0);
-			/*ajoutIpmon(socket_cli);*/
-			login->connect = 1;
-			endWhile = 1;
-		}
-		else if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"non_connecte") == 0)){
-			printf("non_conncete\n");
-			gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Login incorrecte");
-			endWhile = 1;
-		}else{
-#if (DEBUG >0)
-			printf("Message incorecte ou pas de message.\n");
-#endif		
-		}
-        bzero(buf, 200); 
-	}
-    free(msg);
+    bzero(buffer, 200);
+    n = recv(socket_cli, buffer, 200,0);
+    printf("message: %s \n", buffer);
+    
+    pstring = string = strdup(buffer);
+    
+    // Parse login message
+    if ((token = strsep(&string, ":")) != NULL)
+    {
+        int code = strtol(token, NULL, 10);
+        // Connection OK
+        if (code == ACCEPT)
+        {
+            token = strsep(&string, ":");
+            dresseur->coodX = (token != NULL) ? strtol(token, NULL, 10) : 300;
+            token = strsep(&string, ":");
+            dresseur->coodY = (token != NULL) ? strtol(token, NULL, 10) : 150;
+            token = strsep(&string, ":");
+            if (token != NULL)
+            {
+                snprintf(dresseur->map, strlen(token)+1, "%s", token);
+            }
+            
+            sprintf(dresseur->pseudo, "%s", pseudo);
+            login->connect = 1;
+
+            printf("LOGIN ok \n");
+        }
+        // Connection KO
+        else if (code == REFUSE)
+        {
+            gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Login error");
+            printf("LOGIN error \n");
+        }
+    }
+
+    free(pstring);
 
 	if(login->connect == 1){
 		//gtk_widget_destroy(login->fenetre);
@@ -379,8 +343,7 @@ int menu_gtk(){
 	gtk_widget_show_all(fenetre);  
  	g_signal_connect(bouton_enregistrer, "clicked", G_CALLBACK(bouton_enregistrer_clicked), login);
  	g_signal_connect(bouton_connect, "clicked", G_CALLBACK(bouton_connect_clicked), login);
-	g_signal_connect (bouton_quitter, "clicked", G_CALLBACK (cb_quit), NULL);
-	//g_signal_connect(fenetre, "destroy", G_CALLBACK(destroy), NULL); 
+	g_signal_connect (bouton_quitter, "clicked", G_CALLBACK (cb_quit), NULL); 
 	
 	gtk_main();
 	return login->connect;
@@ -388,30 +351,27 @@ int menu_gtk(){
       
 int main(int argc, char *argv[])  {
 	SDL_Init(SDL_INIT_VIDEO);
-	dresseur =malloc(sizeof(Dresseur));
+	dresseur = malloc(sizeof(Dresseur));
 	int s_cli, connect = 0, end = 0,n;
 	char buf[80];
 	bzero(buf,80);
 
-	if(argv[1] != NULL && argv[2]!= NULL){
+	if(argc == 3 && argv[1] != NULL && argv[2]!= NULL){
 		s_cli = connect_serv_Ipmon(argv[1],strtol(argv[2],NULL,10));
 		if(s_cli == -1){
-			printf("ERREUR de connexion..\n");
+			printf("Connection between client and server failed ! IP<%s> Port<%s>\n", argv[1], argv[2]);
 			return 1;
 		}
 	}else{
-		printf("ERREUR Utilisation :: clt_ipmon adresse port\n");
+		printf("Usage: clt_ipmon address port\n");
 		return 0;
 	}
 	socket_cli = s_cli;
-	send(s_cli, "Client connecte ;)", strlen("Client connecte ;)"),0);
 	
 	gtk_init(NULL, NULL);
 	
-	printf("Before menu\n"); 
 	connect = menu_gtk();
-	printf("After menu!!!!!!!\n");
-
+	
 	if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
         jeu(socket_cli, dresseur);
 	}

@@ -3,7 +3,7 @@
 #include "jeu_serv.h"
 
 #define DEBUG 1
-#define TAILLE_BUFF 80
+#define TAILLE_BUFF 200
 
 Dresseur *dresseur_list = NULL;
 /*Mutex pour les zones critiques*/
@@ -82,7 +82,7 @@ void afficher_dresseur(Dresseur *dresseur_list){
 	int i = 0;
 	printf("Liste des dresseurs connecté :\n");
 	while(dresseur != NULL){
-		printf(" Dresseur %d : \n Pseudo = %s\n Map = %s\n CoodX = %d\n CoodY = %d\n Sock = %d\n\n",i,dresseur->pseudo,dresseur->map,dresseur->coodX,dresseur->coodY,dresseur->sock);
+		printf(" Dresseur %d : %s map : %s cood %d:%d sock %d\n",i,dresseur->pseudo,dresseur->map,dresseur->coodX,dresseur->coodY,dresseur->sock);
 		dresseur = dresseur->next; i++;
 	}
 }
@@ -196,79 +196,48 @@ int query_ipmonbdd(Message *msg, int *s_dial){
 	return choice;
 }
 
-int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd){
-#if (DEBUG>0)
-	printf("Insert_Dresseur");
-#endif
-	int n, end = 0, connecte = 0, coodX, coodY;
-	Message *msg = (Message*)malloc(sizeof(Message));
-	char* pseudo = NULL;
-	char* pass = NULL;
-	char buf [TAILLE_BUFF];
+int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass){
 	char requete[1024] = "";
+	char buf [TAILLE_BUFF];
+	int connecte = 0, coodX, coodY;
 	MYSQL_RES *result;
-	MYSQL_ROW row;  
+	MYSQL_ROW row; 
 
-	send(*s_dial, "001PSEUDO", strlen("001PSEUDO"),0);
+	printf("Client : %d Pseudo :: %s et Mot de Passe : %s\n", *s_dial,pseudo, pass);
 
-	bzero (buf, TAILLE_BUFF) ;
+	sprintf(requete, "SELECT * FROM dresseur WHERE Nom_Dresseur='%s' AND Mdp_Dresseur='%s';", pseudo, pass);
+	printf ("Client : %d Requete :: %s \n",*s_dial, requete);
+	/*On execute la requete DEBUT ZONE CRITIQUE*/
+	pthread_mutex_lock(&mutex_client);
+	 
+	if(mysql_query(ipmon_bdd, requete)){
+		finish_with_error(ipmon_bdd);
+	}   
 
-	while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
-		snprintf(msg->code, 4, "%s", buf);
-		snprintf(msg->data, 100, "%s", buf+3);
-#if (DEBUG >0)
-		printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
-#endif
-		if(strcmp(msg->code,"005") == 0){
-			pseudo = (char*)malloc(TAILLE_BUFF*sizeof(char));
-			strcpy(pseudo, msg->data);
-			send(*s_dial, "001PASS", strlen("001PASS"),0);
-			bzero(buf, TAILLE_BUFF);
-		}
-		else if(strcmp(msg->code,"006") == 0){
-			pass = (char*)malloc(TAILLE_BUFF*sizeof(char));
-			strcpy(pass, msg->data);
-			send(*s_dial, "001END", strlen("001END"),0);
-			printf("Client : %d Pseudo :: %s et Mot de Passe : %s\n", *s_dial,pseudo, pass);
-
-			/*On ajoute le pseudo et le pass dans la requete*/
-			sprintf(requete, "SELECT * FROM dresseur WHERE Nom_Dresseur='%s' AND Mdp_Dresseur='%s';", pseudo, pass);
-			printf ("Client : %d Requete :: %s \n",*s_dial, requete);
-			/*On execute la requete DEBUT ZONE CRITIQUE*/
-			pthread_mutex_lock(&mutex_client);
-			 
-			if(mysql_query(ipmon_bdd, requete)){
-    			finish_with_error(ipmon_bdd);
-			}   
-			printf("QUERY OK !!\n");
-			result = mysql_store_result(ipmon_bdd);
-			row = mysql_fetch_row(result);
-			if(row){
-				sprintf(buf,"000%s:%s:%s",row[5],row[6],row[9]);
-				send(*s_dial, buf, strlen(buf),0);
-				//row[0]id row[5]Cordonnee X row[6]Coordonnee Y row[9] map
-				coodX = strtol(row[5],NULL,10);
-				coodY = strtol(row[6],NULL,10);
-				dresseur_list = ajouter_dresseur(dresseur_list, *s_dial, pseudo,coodX,coodY,row[9],strtol(row[0],NULL,10));
-				bzero(buf,MAX_SIZE_IPMON_STR);
-				recv(*s_dial, buf, TAILLE_BUFF,0);//recu attente
-				bzero(buf,MAX_SIZE_IPMON_STR);
-				/*envoieIpmonDresseur(*s_dial,ipmon_bdd,dresseur_list);*/
-				
-				
-				afficher_dresseur(dresseur_list);
-				connecte = 1;
-			 	
-			}else{
-				send(*s_dial, "001non_connecte", strlen("001non_connecte"),0);
-			}
-			/* FIN zone critique */
-			pthread_mutex_unlock (&mutex_client);
-			end = 1;
-		}
-		bzero(msg->code,50);
-		bzero(msg->data,50);
+	result = mysql_store_result(ipmon_bdd);
+	row = mysql_fetch_row(result);
+	if(row)
+	{
+		sprintf(buf,"%d:%s:%s:%s", ACCEPT, row[5], row[6], row[9]);
+		//row[0]id row[5]Cordonnee X row[6]Coordonnee Y row[9] map
+		coodX = strtol(row[5],NULL,10);
+		coodY = strtol(row[6],NULL,10);
+		dresseur_list = ajouter_dresseur(dresseur_list, *s_dial, pseudo,coodX,coodY,row[9],strtol(row[0],NULL,10));
+		//recv(*s_dial, buf, TAILLE_BUFF,0);//recu attente
+		//bzero(buf,MAX_SIZE_IPMON_STR);
+		/*envoieIpmonDresseur(*s_dial,ipmon_bdd,dresseur_list);*/
+		
+		
+		afficher_dresseur(dresseur_list);
+		connecte = 1;
 	}
+	else
+	{
+		sprintf(buf,"%d", REFUSE);
+	}
+	send(*s_dial, buf, strlen(buf),0);
+	pthread_mutex_unlock (&mutex_client);
+
 	return connecte;
 }
 
@@ -352,51 +321,63 @@ int cree_serveur_tcp (int port, int nb_max_clients) {
 /*
  * Le thread qui gere le client
  */
-void *gerer_client (void *data) {
+void *manage_player (void *data) {
 	int s_dial = *(int *) data ;
 	char buf [TAILLE_BUFF];
-	int n, choice = 999, connecte = 0;
+	int n, code = 999, connecte = 0;
+	char *token, *string, *pstring;
+	char pseudo[100];
+	char pass[100];
 
 	MYSQL *ipmon_bdd;
-	Message *msg = (Message*)malloc(sizeof(Message));
 
 	ipmon_bdd = connect_bdd();
 	bzero (buf, TAILLE_BUFF) ;
 
 
-	strcpy(buf, "Connecte au serveur Ipmon\n\n");
-	send (s_dial, buf, TAILLE_BUFF,0) ;
+	while (code != CLOSE && (n = recv(s_dial, buf, TAILLE_BUFF,0)))
+	{
+		pstring = string = strdup(buf);
 
-	bzero (buf, TAILLE_BUFF) ;
+		if ((token = strsep(&string, ":")) != NULL)
+    	{
+        	code = strtol(token, NULL, 10);
+        	if (code == CONNECTION || code == REGISTER)
+        	{
+        		token = strsep(&string, ":");
+        		if (token != NULL)
+        		{
+        			strncpy(pseudo, token, 200);
+        			token = strsep(&string, ":");
+        			if (token != NULL)
+        			{
+        				strncpy(pass, token, 200);
+        			}
+        		}
+        		
+        		if (code == CONNECTION)
+        		{
+        			if (connection_dresseur(&s_dial, ipmon_bdd, pseudo, pass))
+        			{
+        				jeu(&s_dial, ipmon_bdd, dresseur_list, &mutex_client);
+        			}
+        		}
+        		else
+        		{
+        			insert_dresseur(&s_dial, ipmon_bdd);
+        		}
+        	}
+        	else if (code == CLOSE)
+        	{
+        		printf("CLOSE !");
+        	}
+    	}
 
-	while (choice != 10 && (n = recv(s_dial, buf, TAILLE_BUFF,0))) {
-		/*On copie le msg dans la structure Message*/
-		bzero(msg->code,50);
-		bzero(msg->data,50);
-		snprintf(msg->code, 4, "%s", buf);
-		snprintf(msg->data, 100, "%s", buf+3);
-#if (DEBUG >0)
-		printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
-#endif
-		choice = query_ipmonbdd(msg, &s_dial);
-		switch(choice){
-			case 0 : insert_dresseur(&s_dial, ipmon_bdd);
-				choice = 999;
-				break;
-			case 1 : connecte = connection_dresseur(&s_dial, ipmon_bdd);
-				choice = 999;
-				if(connecte == 1){
-					jeu(&s_dial, ipmon_bdd, dresseur_list, &mutex_client);
-				}
-				break;
-			default:
-				break;
-		}
-		bzero (buf, TAILLE_BUFF) ;
 	}
+
 	send (s_dial, "OKCLOSE", strlen("OKCLOSE"),0) ;	
-	free (data) ;
 	close (s_dial) ;
+	free (data) ;
 	return (NULL) ;
 }
 
@@ -405,8 +386,7 @@ int main (int argc, char* argv[]) {
 	int s_ecoute ;
 	int r ;
 
-	 /*On cree une socket d'ecoute sur le port 6667 et on peut mettre
-           jusqu'a 5 clients en file d'attente*/
+	// Create socket with a max of MAX_CLIENTS
 	s_ecoute = cree_serveur_tcp (strtol(argv[1],NULL,10), MAX_CLIENTS) ;
 
 	while (1) {
@@ -416,18 +396,14 @@ int main (int argc, char* argv[]) {
 
 		s_dial = malloc (sizeof *s_dial) ;
 
-		/* On se met en ecoute sur la socket. C'est une fonction
-                   bloquante qui ne se debloque que lorsqu'un client vient
-                   se connecter sur cette socket d'ecoute.
-                   La valeur de retour est alors le descripteur de la socket
-	           de connexion permettant  de dialoguer avec CE client.*/
+		// Connect to socket (return struct to dial with client)
 		*s_dial = accept (s_ecoute, NULL, 0) ;
 
 		thread_attributes = malloc (sizeof *thread_attributes) ;
 		r = pthread_attr_init (thread_attributes) ;
 		r = pthread_attr_setdetachstate (thread_attributes, PTHREAD_CREATE_DETACHED) ;
 
-		r = pthread_create (&tid, thread_attributes, gerer_client, s_dial) ;
+		r = pthread_create (&tid, thread_attributes, manage_player, s_dial) ;
 
 		r = pthread_attr_destroy (thread_attributes) ;
 	}
