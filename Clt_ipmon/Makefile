@@ -7,7 +7,7 @@ GUI_ipmon.o: GUI_ipmon.c event.h map.h jeu.h
 event.o: event.c event.h
 	gcc -c `pkg-config --cflags --libs gtk+-2.0` event.c -o event.o
 
-main.o: main.c main.h
+main.o: main.c main.h protocol.h
 	gcc -c `pkg-config --cflags --libs gtk+-2.0` main.c -o main.o 
 
 map.o: map.c map.h
