@@ -2,6 +2,6 @@
 
 ## Depedencies
 
-SDL v1.2
-libmysqlclient-dev
-gtk v2.0
+* SDL v1.2
+* libmysqlclient-dev
+* gtk v2.0
