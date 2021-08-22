@@ -380,15 +380,8 @@ int main(int argc, char *argv[])  {
         jeu(socket_cli, dresseur);
 	}
 
-	send(socket_cli,"endclose",strlen("endclose"),0);
-	recv(socket_cli,buf,80,0);
-	bzero(buf,80);
-	send(socket_cli,"999CLOSE",strlen("999CLOSE"),0);
-	while(end == 0 &&(n = recv(socket_cli,buf,80,0))){
-		if(strcmp(buf,"OKCLOSE")==0)
-			end=1;
-		bzero(buf,80);
-	}
+	shutdown(socket_cli, SHUT_RDWR);
+	close(socket_cli);
     printf("CLOSE !!");
 
 	return 0;  
