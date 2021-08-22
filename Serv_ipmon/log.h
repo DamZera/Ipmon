@@ -13,7 +13,7 @@
 
 #include <malloc.h>
 #include <mysql/mysql.h>
-#include "protocol.h"
+#include "../Common/inc/protocol.h"
 
 #define MAX_CLIENTS 5 
 #define MAX_SIZE_IPMON_STR 100
@@ -63,7 +63,7 @@ typedef struct Message{
 char *str_sub (const char *s, unsigned int start, unsigned int end);
 
 int query_ipmonbdd(Message *msg, int *s_dial);
-void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd);
+void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass);
 int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass);
 void afficher_dresseur(Dresseur *dresseur_list);
 int next_client_num(Dresseur **dresseurs);

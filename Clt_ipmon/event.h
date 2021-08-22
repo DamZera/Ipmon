@@ -1,8 +1,8 @@
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
-typedef struct // évenements clavier et souris
+typedef struct // Input event
 {
-	char key[SDLK_LAST];
+	char key[SDL_NUM_SCANCODES];
 	int mousex,mousey;
 	int mousexrel,mouseyrel;
 	char mousebuttons[8];

@@ -11,7 +11,7 @@ MYSQL *connect_bdd(){
     if(mysql_real_connect(mysql,
     		"localhost", //IP de la bdd
     		"ipmon", 	 //User
-    		"ipmon", 		 //Pass
+    		"ipmon2021", 		 //Pass
     		"ipmon", 	 //Bdd
     		8889,0,0)){
     	printf("Connexion sucess !!\n");

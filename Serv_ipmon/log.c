@@ -205,7 +205,7 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
 
 	printf("Client : %d Pseudo :: %s et Mot de Passe : %s\n", *s_dial,pseudo, pass);
 
-	sprintf(requete, "SELECT * FROM dresseur WHERE Nom_Dresseur='%s' AND Mdp_Dresseur='%s';", pseudo, pass);
+	sprintf(requete, "SELECT * FROM dresseur WHERE dresseur_name='%s' AND dresseur_pass='%s';", pseudo, pass);
 	printf ("Client : %d Requete :: %s \n",*s_dial, requete);
 	/*On execute la requete DEBUT ZONE CRITIQUE*/
 	pthread_mutex_lock(&mutex_client);
@@ -216,13 +216,28 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
 
 	result = mysql_store_result(ipmon_bdd);
 	row = mysql_fetch_row(result);
+	int num_fields = mysql_num_fields(result);
+
 	if(row)
 	{
-		sprintf(buf,"%d:%s:%s:%s", ACCEPT, row[5], row[6], row[9]);
-		//row[0]id row[5]Cordonnee X row[6]Coordonnee Y row[9] map
-		coodX = strtol(row[5],NULL,10);
-		coodY = strtol(row[6],NULL,10);
-		dresseur_list = ajouter_dresseur(dresseur_list, *s_dial, pseudo,coodX,coodY,row[9],strtol(row[0],NULL,10));
+
+		printf("row : ");
+		for(int i = 0; i < num_fields; i++)
+		{
+			printf("%s ", row[i] ? row[i] : "NULL");
+		}
+		printf("\n");
+		//              0               1                2              3               4                5                  6   
+		// +-------------+---------------+---------------+--------------+----------------+----------------+------------------+
+		// | dresseur_id | dresseur_name | dresseur_pass | dresseur_lvl | dresseur_pos_x | dresseur_pos_y | dresseur_map     |
+		// +-------------+---------------+---------------+--------------+----------------+----------------+------------------+
+		// |           1 | dressA        | 1234          |            1 |            300 |            150 | tilesetIPMON.txt |
+		// +-------------+---------------+---------------+--------------+----------------+----------------+------------------+
+
+		sprintf(buf,"%d:%s:%s:%s", ACCEPT, row[4], row[5], row[6]);
+		coodX = strtol(row[4],NULL,10);
+		coodY = strtol(row[5],NULL,10);
+		dresseur_list = ajouter_dresseur(dresseur_list, *s_dial, pseudo,coodX,coodY,row[6], 1);
 		//recv(*s_dial, buf, TAILLE_BUFF,0);//recu attente
 		//bzero(buf,MAX_SIZE_IPMON_STR);
 		/*envoieIpmonDresseur(*s_dial,ipmon_bdd,dresseur_list);*/
@@ -243,22 +258,22 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
 
 /*CODE PSEUDO = 005 PASS = 006*/
 /*Fonction qui communique avec le client pour ajouter un dresseur dans la base : ipmon*/
-void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd){
+void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass){
 #if (DEBUG>0)
 	printf("Insert_Dresseur");
 #endif
 	int n, end = 0;
 	Message *msg = (Message*)malloc(sizeof(Message));
-	char* pseudo = NULL;
-	char* pass = NULL;
+	//char* pseudo = NULL;
+	//char* pass = NULL;
 	char buf [TAILLE_BUFF];
 	char requete[150] = "";
 
-	send(*s_dial, "001PSEUDO", strlen("001PSEUDO"),0);
+	//send(*s_dial, "001PSEUDO", strlen("001PSEUDO"),0);
 
-	bzero (buf, TAILLE_BUFF) ;
+	//bzero (buf, TAILLE_BUFF) ;
 
-	while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
+	/*while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
 		snprintf(msg->code, 4, "%s", buf);
 		snprintf(msg->data, 100, "%s", buf+3);
 #if (DEBUG >0)
@@ -276,8 +291,8 @@ void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd){
 			send(*s_dial, "001END", strlen("001END"),0);
 			printf("Client : %d Pseudo :: %s et Mot de Passe : %s\n", *s_dial,pseudo, pass);
 
-			/*On ajoute le pseudo et le pass dans la requete*/
-			sprintf(requete, "INSERT INTO dresseur VALUES('0','NULL','%s','%s', '1','300','150','0','0','tilesetIPMON.txt');", pseudo, pass);
+	*/		/*On ajoute le pseudo et le pass dans la requete*/
+			sprintf(requete, "INSERT INTO dresseur VALUES('0', '%s','%s', '1','300','150','tilesetIPMON.txt');", pseudo, pass);
 			printf ("Client : %d Requete :: %s \n", *s_dial,requete);
 			/*On execute la requete DEBUT ZONE CRITIQUE*/
 			 pthread_mutex_lock(&mutex_client);
@@ -289,10 +304,10 @@ void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd){
 			printf ("Fin de zone critque query OK !");
 #endif
 			end = 1;
-		}
+		//}
 		bzero(msg->code,50);
 		bzero(msg->data,50);
-	}
+	//}
 }
 
 
@@ -364,7 +379,7 @@ void *manage_player (void *data) {
         		}
         		else
         		{
-        			insert_dresseur(&s_dial, ipmon_bdd);
+        			insert_dresseur(&s_dial, ipmon_bdd, pseudo, pass );
         		}
         	}
         	else if (code == CLOSE)

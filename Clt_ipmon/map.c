@@ -1,38 +1,56 @@
-
 #include <string.h>
+
+#include <SDL2/SDL_image.h>
+
 #include "map.h"
 
 #define CACHE_SIZE 5000
 #define LARGEUR_FENETRE 800
 #define HAUTEUR_FENETRE 800
 
-SDL_Surface* LoadImage32(const char* fichier_image)
-{
-	SDL_Surface* image_result;
-	SDL_Surface* image_ram = SDL_LoadBMP(fichier_image);	// charge l'image dans image_ram en RAM
-	if (image_ram==NULL)
-	{
-		printf("Image %s introuvable !! \n",fichier_image);
-		SDL_Quit();
-		system("pause");
-		exit(-1);
-	}
-	image_result = SDL_DisplayFormat(image_ram);
-	SDL_FreeSurface(image_ram);
-	return image_result;
+#define TILE_WIDTH  25
+#define TILE_HEIGHT 25
+
+void logSDLError(const char* msg) {
+        printf("%s error : %s", msg, SDL_GetError());
 }
 
-void ChargerMap_tileset(FILE* F,Map* m) // chargement du tileset (partie tileset fichier texte)
+SDL_Texture* loadTexture(const char* fichier_image, SDL_Renderer *ren)
+{
+	SDL_Texture *texture = NULL;
+	SDL_Surface* imgSurface = SDL_LoadBMP(fichier_image);
+	
+	if (imgSurface == NULL)
+	{
+		logSDLError("LoadBMP");
+	}
+	else
+	{
+		texture = SDL_CreateTextureFromSurface(ren, imgSurface);
+        SDL_FreeSurface(imgSurface);
+
+		if (texture == NULL) {
+        	logSDLError("CreateTextureFromSurface");
+        }
+	}
+
+	return texture;
+}
+
+void loadTilesetInMap(SDL_Renderer *pRenderer, FILE* F,Map* m) // chargement du tileset (partie tileset fichier texte)
 {
 	int numtile,i,j;
-	char buf[CACHE_SIZE];  // un buffer, petite mémoire cache
-	char buf2[CACHE_SIZE];  // un buffer, petite mémoire cache
+	char buf[CACHE_SIZE];  // un buffer, petite mï¿½moire cache
+	char buf2[CACHE_SIZE];  // un buffer, petite mï¿½moire cache
 	fscanf(F,"%s",buf); // #tileset
 	fscanf(F,"%s",buf); // nom du fichier
-	m->tileset = LoadImage32(buf);
+	printf("mon buf is %s\n", buf);
+	m->tileset = loadTexture(buf, pRenderer);
 	fscanf(F,"%d %d",&m->nbtilesX,&m->nbtilesY);
-	m->LARGEUR_TILE = m->tileset->w/m->nbtilesX;
-	m->HAUTEUR_TILE = m->tileset->h/m->nbtilesY;
+	//int w, h;
+	//SDL_QueryTexture(m->tileset, NULL, NULL, &w, &h);
+	m->LARGEUR_TILE = 25;//m->tileset->w/m->nbtilesX;
+	m->HAUTEUR_TILE = 25;//m->tileset->h/m->nbtilesY;
 	m->props = malloc(m->nbtilesX*m->nbtilesY*sizeof(TuilePropriete));
 	for(j=0,numtile=0;j<m->nbtilesY;j++)
 	{
@@ -60,7 +78,7 @@ void ChargerMap_tileset(FILE* F,Map* m) // chargement du tileset (partie tileset
 	}
 }
 
-void ChargerMap_level(FILE* F,Map* m) // charger la partie #level dans un fichier texte
+void loadLevelInMap(FILE* F,Map* m) // charger la partie #level dans un fichier texte
 {
 	int i,j;
 	char buf[CACHE_SIZE];  
@@ -87,36 +105,43 @@ void ChargerMap_level(FILE* F,Map* m) // charger la partie #level dans un fichie
 	}
 }
 
-Map* ChargerMap(const char* level,int largeur_fenetre,int hauteur_fenetre) // charger le fichier texte entier
+Map* ChargerMap(SDL_Renderer *pRenderer, const char* level, int largeur_fenetre, int hauteur_fenetre) // charger le fichier texte entier
 {
-	FILE* F;
+	FILE* file;
 	Map* m;
-	F = fopen(level,"r");
-	if (!F)
+	file = fopen(level,"r");
+	if (!file)
 	{
-		printf("fichier %s introuvable !! \n",level);
+		printf("file %s not found !! \n",level);
 		SDL_Quit();
-		system("pause");
 		exit(-1);
 	}
 	m = malloc(sizeof(Map));
-	ChargerMap_tileset(F,m);
-	ChargerMap_level(F,m);
+	printf("\nbefore charger tileset\n");
+	loadTilesetInMap(pRenderer, file, m);
+	printf("\ncharger tileset\n");
+	loadLevelInMap(file,m);
+	printf("\ncharger level\n");
 	m->largeur_fenetre = largeur_fenetre;
 	m->hauteur_fenetre = hauteur_fenetre;
 	m->xscroll = 0;
 	m->yscroll = 0;
-	fclose(F);
+	fclose(file);
 	return m;
 }
 
-int AfficherMap(Map* m,SDL_Surface* screen,int xscroll,int yscroll) // Affiche la map à l'écran
+int AfficherMap(Map* m, SDL_Renderer* renderer, int xscroll,int yscroll) // Affiche la map ï¿½ l'ï¿½cran
 {
 	int i,j;
 	SDL_Rect Rect_dest;
+	Rect_dest.w = TILE_WIDTH;
+	Rect_dest.h = TILE_HEIGHT;
 	
-	
-	
+	SDL_Rect Rect_src;
+	Rect_src.y = 0;
+	Rect_src.w = TILE_WIDTH;
+	Rect_src.h = TILE_HEIGHT;	
+
 	int numero_tile;
 	int minx,maxx,miny,maxy;
 	minx = m->xscroll / m->LARGEUR_TILE;
@@ -133,12 +158,14 @@ int AfficherMap(Map* m,SDL_Surface* screen,int xscroll,int yscroll) // Affiche l
 			if (i<0 || i>=m->nbtiles_largeur_monde || j<0 || j>=m->nbtiles_hauteur_monde){
 				numero_tile = 0;
 			
-		}
+			}
 			else{
 				numero_tile = m->schema[i][j];
-			
-			SDL_BlitSurface(m->tileset,&(m->props[numero_tile].R),screen,&Rect_dest);
-		}
+				Rect_src.x = m->props[numero_tile].R.x;
+				Rect_src.y = m->props[numero_tile].R.y;
+				//SDL_UpdateTexture(sdlTexture, NULL, m->tileset->pixels, m->tileset->pitch);
+				SDL_RenderCopy(renderer, m->tileset, &Rect_src, &Rect_dest);
+			}
 		}
 	}
 	return 0;
@@ -146,6 +173,7 @@ int AfficherMap(Map* m,SDL_Surface* screen,int xscroll,int yscroll) // Affiche l
 
 int LibererMap(Map* m)
 {
+	// TODO to refactor pls
 	SDL_FreeSurface(m->tileset);
 	free(m->schema);
 	free(m->props);
@@ -153,7 +181,7 @@ int LibererMap(Map* m)
 	return 0;
 }
 
-int CollisionDecor(Map* carte,SDL_Rect* perso, SDL_Surface* screen){
+int CollisionDecor(Map* carte, SDL_Rect* perso, SDL_Surface* screen){
 	
 	//Map* carte1;
 	//Map* carte2;

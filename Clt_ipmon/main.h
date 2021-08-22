@@ -14,7 +14,7 @@
 #include <malloc.h>
 #include <gtk/gtk.h>
 
-#include "protocol.h"
+#include "../Common/inc/protocol.h"
 
 typedef struct Login{
 	GtkWidget *champ_login;

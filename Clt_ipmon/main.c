@@ -164,31 +164,34 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 	Login *login = data;
 	char pseudo[50];
 	char pass[50];	
-	char buf [80];
+	char buf [200];
 	int n , endWhile = 0;
 	Message* msg = (Message*)malloc(sizeof(Message));
-	bzero(buf, 80);
+	bzero(buf, 200);
 
 	strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
 	strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
 
-	send(socket_cli, "001insert_dresseur", strlen("001insert_dresseur"),0);
+    snprintf(buf, 200, "%d:%s:%s", REGISTER, pseudo, pass);
+    send(socket_cli, buf, strlen(buf), 0);
+
+	//send(socket_cli, "001insert_dresseur", strlen("001insert_dresseur"),0);
 
 
-	while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
+	/*while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
 			bzero(msg->code,4);
 			bzero(msg->data,77);
 			snprintf(msg->code, 4, "%s", buf);
 			snprintf(msg->data, 77, "%s", buf+3);
-#if (DEBUG >0)
-			printf ("J'ai recu [%s] \n msg->code : %s\nmsg->data : %s \n", buf, msg->code , msg->data) ;
+#if (DEBUG > 0)
+			printf ("<buffer> [%s] msg->code : %s msg->data : %s \n", buf, msg->code , msg->data) ;
 #endif
 
 			if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"PSEUDO") == 0)){
 				strcpy(buf, "005");
 				strcat(buf, pseudo);
 				send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG >0)
+#if (DEBUG > 0)
 				printf("buff in insert PSEUDO = %s\n", buf);
 #endif
 				bzero(buf, 80);
@@ -197,7 +200,7 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 				strcpy(buf, "006");
 				strcat(buf, pass);
 				send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG >0)
+#if (DEBUG > 0)
 				printf("buff in insert PASS = %s\n", buf);
 #endif
 				bzero(buf, 80);
@@ -206,12 +209,13 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 				endWhile = 1;
 				bzero(buf, 80);
 			}else{
-#if (DEBUG >0)
+#if (DEBUG > 0)
 				printf("Message incorecte ou pas de message.\n");
 #endif		
 				bzero(buf, 80);	
 			}
-	}
+	}*/
+
 }
 
 gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
@@ -308,15 +312,15 @@ int menu_gtk(){
 	
 	/* Options de la Zone de saisie champ_login*/
    	gtk_entry_set_max_length(GTK_ENTRY(champ_login), 50);          /* Nombre max de caractères */
-    gtk_entry_set_text (GTK_ENTRY(champ_login), "Pseudo" ); /* Texte par défaut */
+    gtk_entry_set_text (GTK_ENTRY(champ_login), "dressA" ); /* Texte par défaut */
     gtk_entry_set_visibility(GTK_ENTRY(champ_login), TRUE);             /* Visibilité des caracteres */
-    gtk_entry_set_editable(GTK_ENTRY(champ_login), TRUE);               /* Ecriture dans la zone possbile */
+    //gtk_entry_set_editable(GTK_ENTRY(champ_login), TRUE);               /* Ecriture dans la zone possbile */
     
     /* Options de la Zone de saisie champ_pass*/
    	gtk_entry_set_max_length(GTK_ENTRY(champ_pass), 50);         
-    gtk_entry_set_text (GTK_ENTRY(champ_pass), "Pass" ); 
+    gtk_entry_set_text (GTK_ENTRY(champ_pass), "1234" ); 
     gtk_entry_set_visibility(GTK_ENTRY(champ_pass), FALSE);            
-    gtk_entry_set_editable(GTK_ENTRY(champ_pass), TRUE);             
+    //gtk_entry_set_editable(GTK_ENTRY(champ_pass), TRUE);             
 	
 	/*on ajoute les boutons au container*/
 	

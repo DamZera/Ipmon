@@ -2,8 +2,8 @@
 #define JEU_H
 
 #include "main.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <time.h>
 
 typedef struct{
