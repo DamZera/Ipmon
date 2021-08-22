@@ -132,6 +132,7 @@ Map* ChargerMap(SDL_Renderer *pRenderer, const char* level, int largeur_fenetre,
 
 int AfficherMap(Map* m, SDL_Renderer* renderer, int xscroll,int yscroll) // Affiche la map � l'�cran
 {
+	printf("AfficherMap :: START\n");
 	int i,j;
 	SDL_Rect Rect_dest;
 	Rect_dest.w = TILE_WIDTH;
@@ -168,6 +169,9 @@ int AfficherMap(Map* m, SDL_Renderer* renderer, int xscroll,int yscroll) // Affi
 			}
 		}
 	}
+
+	printf("AfficherMap :: END\n");
+
 	return 0;
 }
 
@@ -259,9 +263,11 @@ void ClampScroll(Map* m) {// permettre le scrolling
 
 int FocusScrollCenter(Map* carte,SDL_Rect* perso) // focus scrolling sur le dresseur
 {
+	printf("FocusScrollCenter :: START\n");
 	carte->xscroll = perso->x + perso->w/2 - carte->largeur_fenetre/2;
 	carte->yscroll = perso->y + perso->h/2 - carte->hauteur_fenetre/2;
 	ClampScroll(carte);
+	printf("FocusScrollCenter :: END\n");
 	return 0;
 }
 

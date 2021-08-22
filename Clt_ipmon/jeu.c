@@ -11,8 +11,8 @@ void jeuDeplacement(SDL_Rect perso, Coord *persoAvant, int sock){
 		
 		sprintf(buf, "010%d:%d", perso.x, perso.y);
 		
-		send(sock,buf,strlen(buf),0);
-		recv(sock,buf,80,0);
+		//send(sock,buf,strlen(buf),0);
+		//recv(sock,buf,80,0);
 		bzero(buf,80);
 		persoAvant->y = perso.y;
 		persoAvant->x = perso.x;

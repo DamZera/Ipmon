@@ -3,7 +3,6 @@
 
 #include "main.h"
 #include "map.h"
-#include "event.h"
 
 #include <unistd.h>
 #include <time.h>
