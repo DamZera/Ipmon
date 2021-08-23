@@ -9,16 +9,16 @@ MYSQL *connect_bdd(){
     mysql_options(mysql,MYSQL_READ_DEFAULT_GROUP,"option");
 
     if(mysql_real_connect(mysql,
-    		"localhost", //IP de la bdd
-    		"ipmon", 	 //User
-    		"ipmon2021", 		 //Pass
-    		"ipmon", 	 //Bdd
-    		8889,0,0)){
-    	printf("Connexion sucess !!\n");
+            "localhost", //IP de la bdd
+            "ipmon",      //User
+            "ipmon2021",          //Pass
+            "ipmon",      //Bdd
+            8889,0,0)){
+        printf("Connexion sucess !!\n");
     }
     else {
-    	printf("Error in connect_bdd()\n");
-    	printf( "Error: %s\n", mysql_error( mysql ) ) ;
+        printf("Error in connect_bdd()\n");
+        printf( "Error: %s\n", mysql_error( mysql ) ) ;
     }
     return mysql;
 }

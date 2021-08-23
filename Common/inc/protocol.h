@@ -3,11 +3,11 @@
 
 typedef enum 
 {
-	CONNECTION          = 0,
-	REGISTER            = 2,
-	NEW_COORDINATES     = 4,
-	COMBAT              = 6,
-	CLOSE				= 8
+    CONNECTION          = 0,
+    REGISTER            = 2,
+    NEW_COORDINATES     = 4,
+    COMBAT              = 6,
+    CLOSE                = 8
 } client_code_msg;
 
 typedef enum 

@@ -7,14 +7,14 @@
 #include <time.h>
 
 typedef struct{
-	int x;
-	int y;
+    int x;
+    int y;
 }Coord;
 
 typedef struct Dresseur_aff{
-	SDL_Rect perso, positiontexte;
-	SDL_Surface* texte;
-	struct Dresseur_aff* next;
+    SDL_Rect perso, positiontexte;
+    SDL_Surface* texte;
+    struct Dresseur_aff* next;
 }Dresseur_aff;
 
 

@@ -3,22 +3,22 @@
 
 typedef struct // tuiles (=images)
 {
-	SDL_Rect R;
-	int collision;
-	int changerMap;
-	int combat;
+    SDL_Rect R;
+    int collision;
+    int changerMap;
+    int combat;
 } TuilePropriete;
 
 typedef struct // Tileset
 {
-	int LARGEUR_TILE,HAUTEUR_TILE;
-	int nbtilesX,nbtilesY;
-	SDL_Texture* tileset;
-	TuilePropriete* props;
-	Uint16** schema; // permet 
-	int nbtiles_largeur_monde,nbtiles_hauteur_monde;
-	int xscroll,yscroll;
-	int largeur_fenetre,hauteur_fenetre;
+    int LARGEUR_TILE,HAUTEUR_TILE;
+    int nbtilesX,nbtilesY;
+    SDL_Texture* tileset;
+    TuilePropriete* props;
+    Uint16** schema; // permet 
+    int nbtiles_largeur_monde,nbtiles_hauteur_monde;
+    int xscroll,yscroll;
+    int largeur_fenetre,hauteur_fenetre;
 } Map;
 
 void logSDLError(const char* msg);
