@@ -172,7 +172,7 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
     strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
     strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
 
-    snprintf(buf, 200, "%d:%s:%s", REGISTER, pseudo, pass);
+    snprintf(buf, 200, "%d:%s:%s", REGISTER_TO_IPMON, pseudo, pass);
     send(socket_cli, buf, strlen(buf), 0);
 }
 
@@ -190,7 +190,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
     
     bzero(buffer, 200);
-    snprintf(buffer, 200, "%d:%s:%s", CONNECTION, pseudo, pass);
+    snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, pseudo, pass);
     send(socket_cli, buffer, strlen(buffer), 0);
 
     bzero(buffer, 200);
@@ -204,7 +204,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     {
         int code = strtol(token, NULL, 10);
         // Connection OK
-        if (code == ACCEPT)
+        if (code == ACCEPT_CONNECTION)
         {
             token = strsep(&string, ":");
             dresseur->coodX = (token != NULL) ? strtol(token, NULL, 10) : 300;
@@ -222,7 +222,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
             printf("LOGIN ok \n");
         }
         // Connection KO
-        else if (code == REFUSE)
+        else if (code == REFUSE_CONNECTION)
         {
             gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Login error");
             printf("LOGIN error \n");
@@ -269,13 +269,13 @@ int menu_gtk(){
     champ_pass  = gtk_entry_new();
     
     /* Options de la Zone de saisie champ_login*/
-       gtk_entry_set_max_length(GTK_ENTRY(champ_login), 50);          /* Nombre max de caractères */
+    gtk_entry_set_max_length(GTK_ENTRY(champ_login), 50);          /* Nombre max de caractères */
     gtk_entry_set_text (GTK_ENTRY(champ_login), "dressA" ); /* Texte par défaut */
     gtk_entry_set_visibility(GTK_ENTRY(champ_login), TRUE);             /* Visibilité des caracteres */
     //gtk_entry_set_editable(GTK_ENTRY(champ_login), TRUE);               /* Ecriture dans la zone possbile */
     
     /* Options de la Zone de saisie champ_pass*/
-       gtk_entry_set_max_length(GTK_ENTRY(champ_pass), 50);         
+    gtk_entry_set_max_length(GTK_ENTRY(champ_pass), 50);         
     gtk_entry_set_text (GTK_ENTRY(champ_pass), "1234" ); 
     gtk_entry_set_visibility(GTK_ENTRY(champ_pass), FALSE);            
     //gtk_entry_set_editable(GTK_ENTRY(champ_pass), TRUE);             
@@ -303,8 +303,8 @@ int menu_gtk(){
     login->connect = 0;
       
     gtk_widget_show_all(fenetre);  
-     g_signal_connect(bouton_enregistrer, "clicked", G_CALLBACK(bouton_enregistrer_clicked), login);
-     g_signal_connect(bouton_connect, "clicked", G_CALLBACK(bouton_connect_clicked), login);
+    g_signal_connect(bouton_enregistrer, "clicked", G_CALLBACK(bouton_enregistrer_clicked), login);
+    g_signal_connect(bouton_connect, "clicked", G_CALLBACK(bouton_connect_clicked), login);
     g_signal_connect (bouton_quitter, "clicked", G_CALLBACK (cb_quit), NULL); 
     
     gtk_main();
@@ -338,6 +338,9 @@ int main(int argc, char *argv[])  {
         jeu(socket_cli, dresseur);
     }
 
+    snprintf(buf, 80, "%d", CLOSE_CLIENT);
+    send(socket_cli, buf, strlen(buf), 0);
+    sleep(1); // wait last message
     shutdown(socket_cli, SHUT_RDWR);
     close(socket_cli);
     printf("CLOSE !!");

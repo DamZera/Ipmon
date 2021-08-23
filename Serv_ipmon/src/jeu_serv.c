@@ -3,6 +3,7 @@
 #define TAILLE_BUFF 80
 Dresseur *dresseur_list_jeu;
 
+// TODO refactor with new code and test
 int jeu(int *s_dial, MYSQL* ipmon_bdd, Dresseur *dresseur_list, pthread_mutex_t* mutex_client){
     char buf [TAILLE_BUFF];
     int n, end = 0;
