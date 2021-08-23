@@ -15,6 +15,7 @@
 #include <gtk/gtk.h>
 
 #include "protocol.h"
+#include "logger.h"
 
 typedef struct Login{
     GtkWidget *champ_login;

@@ -6,12 +6,13 @@ OBJS=jeu_serv.o mysql_ipmon.o log.o
 
 DEPS=$(INC_DIR_COMMON)/* inc/*
 LIBS=-L/usr/local/mysql/lib -lmysqlclient -lpthread
-CFLAGS=-c -Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
+CFLAGS=-Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
 
 all: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o serv $(CFLAGS)
 
 %.o: $(SRC_DIR)/%.c $(DEPS)
-	$(CC) -o $@ $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
 	rm -rf *.o

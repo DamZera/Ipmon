@@ -70,7 +70,7 @@ void ajoutIpmon(int socket_cli){
                 ipmon_adv->type = malloc(sizeof(char)*50);
                 ipmon_adv->nom_attaque = malloc(sizeof(char)*50);
                 ipmon_adv->nom_attaque_special = malloc(sizeof(char)*50);
-                printf("buf :: %s pok  %d",buf,i);
+                LOG_DBG("buf :: %s pok  %d",buf,i);
                 i++;
                 token = strtok(buf, ":");
                 ipmon_adv->id = strtol(token,NULL,10);
@@ -128,7 +128,7 @@ void ajoutIpmon(int socket_cli){
                 ipmon_adv->nom_attaque_special = malloc(sizeof(char)*strlen(token));
                 ipmon_adv->nom_attaque_special = token;
                 token = strtok(NULL, ":");
-                printf("buf defence :: %s pok  %d",token,i);
+                LOG_DBG("buf defence :: %s pok  %d",token,i);
                 ipmon_adv->puissance_defense_special = strtol(token,NULL,10);
                 token = NULL;
                 bzero(buf,80);
@@ -195,7 +195,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
 
     bzero(buffer, 200);
     n = recv(socket_cli, buffer, 200,0);
-    printf("message: %s \n", buffer);
+    LOG_INFO("message: %s ", buffer);
     
     pstring = string = strdup(buffer);
     
@@ -219,13 +219,13 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
             sprintf(dresseur->pseudo, "%s", pseudo);
             login->connect = 1;
 
-            printf("LOGIN ok \n");
+            LOG_INFO("LOGIN ok");
         }
         // Connection KO
         else if (code == REFUSE_CONNECTION)
         {
             gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Login error");
-            printf("LOGIN error \n");
+            LOG_INFO("LOGIN error");
         }
     }
 
@@ -233,12 +233,11 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
 
     if(login->connect == 1){
         //gtk_widget_destroy(login->fenetre);
-        printf("CB destroy\n");
+        LOG_INFO("CB destroy");
         gtk_main_quit ();
-        printf("Return False\n");
         return FALSE;
     }
-    printf("Return true\n");
+
     return TRUE;
 }
 
@@ -321,11 +320,11 @@ int main(int argc, char *argv[])  {
     if(argc == 3 && argv[1] != NULL && argv[2]!= NULL){
         s_cli = connect_serv_Ipmon(argv[1],strtol(argv[2],NULL,10));
         if(s_cli == -1){
-            printf("Connection between client and server failed ! IP<%s> Port<%s>\n", argv[1], argv[2]);
+            LOG_ERR("Connection between client and server failed ! IP<%s> Port<%s>", argv[1], argv[2]);
             return 1;
         }
     }else{
-        printf("Usage: clt_ipmon address port\n");
+        LOG_ERR("Usage: clt_ipmon address port");
         return 0;
     }
     socket_cli = s_cli;
@@ -343,7 +342,7 @@ int main(int argc, char *argv[])  {
     sleep(1); // wait last message
     shutdown(socket_cli, SHUT_RDWR);
     close(socket_cli);
-    printf("CLOSE !!");
+    LOG_ERR("CLOSE !!");
 
     return 0;  
 }  

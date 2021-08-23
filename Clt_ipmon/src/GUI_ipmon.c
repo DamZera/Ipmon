@@ -10,7 +10,7 @@ SDL_Texture *dresseurHaut = NULL, *dresseurBas = NULL , *dresseurGauche = NULL, 
 
 void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRenderer,int xscroll,int yscroll,SDL_Surface* texte) // Deplacement du dresseur PETIT SOUCIS QUE JE N'ARRIVE PAS A REGLER LORS DE LACHEMENT DE BUTON J'AI TESTE AVEC UNE BOUCLE WHILE MAIS ECRAN NOIR!!!
 {    
-    printf("DeplacerVecteur :: START\n");
+    LOG_DBG("DeplacerVecteur :: START");
     Dresseur_aff* dresseur = dresseur_list_jeu;
 
     SDL_Event event;
@@ -28,7 +28,7 @@ void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRe
     int vitesse = MOVE_SPEED_PLAYER;
     *vx = *vy = 0;
 
-    printf("DeplacerVecteur :: INIT DONE\n");
+    LOG_DBG("DeplacerVecteur :: INIT DONE");
 
     //SDL_EnableKeyRepeat(100, 100);
         
@@ -69,7 +69,7 @@ void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRe
     //SDL_BlitSurface(texte, NULL, screen, &positiontexte);
 
     SDL_RenderCopy(pRenderer, dresseurActuel, &imgSize, &positionsurecran);
-    printf("DeplacerVecteur :: END\n");
+    LOG_DBG("DeplacerVecteur :: END");
 }
 
 int EssaiDeplacement(Map* carte,SDL_Rect* perso,int vx,int vy, int sock, SDL_Surface *screen)
@@ -92,7 +92,7 @@ int EssaiDeplacement(Map* carte,SDL_Rect* perso,int vx,int vy, int sock, SDL_Sur
         return 1;
     }
     else if(result == 3){
-        printf("Apres CollisionDecor");
+        LOG_DBG("Apres CollisionDecor");
         
         return 0;
     }
@@ -101,7 +101,7 @@ int EssaiDeplacement(Map* carte,SDL_Rect* perso,int vx,int vy, int sock, SDL_Sur
 
 void Deplace(Map* carte,SDL_Rect* perso,int vx,int vy,int LARGEUR_TILE,int HAUTEUR_TILE,int sock,SDL_Surface *screen)
 {
-    printf("Deplace :: START\n");
+    LOG_DBG("Deplace :: START");
     int i;
     if (vx>=LARGEUR_TILE || vy>=HAUTEUR_TILE)
     {
@@ -122,7 +122,7 @@ void Deplace(Map* carte,SDL_Rect* perso,int vx,int vy,int LARGEUR_TILE,int HAUTE
         if (EssaiDeplacement(carte,perso,0,SGN(vy),sock, screen)==0)
             break;            
     }
-    printf("Deplace :: END\n");
+    LOG_DBG("Deplace :: END");
 }
 
 void init_dresseur(SDL_Renderer* ren){
@@ -153,7 +153,7 @@ void init_dresseur(SDL_Renderer* ren){
 
 //DEFAULT nom_map "tilesetIPMON.txt" persox "300" persoy "150"
 void jeu(int sock, Dresseur *dresseur){
-    printf("IN jeu function on map:%s", dresseur->map);
+    LOG_DBG("IN jeu function on map:%s", dresseur->map);
     joueur = dresseur;
     
     struct timeval tv1,tv2;
@@ -253,7 +253,7 @@ void jeu(int sock, Dresseur *dresseur){
         DeplacerVecteur(state, &vx, &vy, &perso, pRenderer, carte->xscroll, carte->yscroll, texte);
 
         if(elapsed > 250000){
-            //printf("UPDATE !\n");
+            //printf("UPDATE !");
             //dresseur_list_jeu = jeuAfficherDresseurs(sock, dresseur->map, police);
             //gettimeofday(&tv2,NULL);
         }
@@ -265,7 +265,7 @@ void jeu(int sock, Dresseur *dresseur){
         //SDL_RenderCopy(pRenderer, sdlTexture, NULL, NULL);
         SDL_RenderPresent(pRenderer);
         SDL_Delay(20);
-        printf("END LOOP !\n\n");
+        LOG_DBG("END LOOP !");
     }
     LibererMap(carte);
     SDL_Quit();

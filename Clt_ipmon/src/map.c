@@ -12,7 +12,7 @@
 #define TILE_HEIGHT 25
 
 void logSDLError(const char* msg) {
-        printf("%s error : %s", msg, SDL_GetError());
+    LOG_ERR("%s error SDL2 : %s", msg, SDL_GetError());
 }
 
 SDL_Texture* loadTexture(const char* fichier_image, SDL_Renderer *ren)
@@ -44,7 +44,7 @@ void loadTilesetInMap(SDL_Renderer *pRenderer, FILE* F,Map* m) // chargement du 
     char buf2[CACHE_SIZE];  // un buffer, petite m�moire cache
     fscanf(F,"%s",buf); // #tileset
     fscanf(F,"%s",buf); // nom du fichier
-    printf("mon buf is %s\n", buf);
+    LOG_DBG("mon buf is %s", buf);
     m->tileset = loadTexture(buf, pRenderer);
     fscanf(F,"%d %d",&m->nbtilesX,&m->nbtilesY);
     //int w, h;
@@ -95,7 +95,7 @@ void loadLevelInMap(FILE* F,Map* m) // charger la partie #level dans un fichier 
             fscanf(F,"%d",&tmp);
             if (tmp>=m->nbtilesX*m->nbtilesY)
             {
-                printf("map tuile hors limite\n");
+                LOG_ERR("map tuile hors limite");
                 SDL_Quit();
                 system("pause");
                 exit(-1);
@@ -112,16 +112,16 @@ Map* ChargerMap(SDL_Renderer *pRenderer, const char* level, int largeur_fenetre,
     file = fopen(level,"r");
     if (!file)
     {
-        printf("file %s not found !! \n",level);
+        LOG_ERR("file %s not found !! ",level);
         SDL_Quit();
         exit(-1);
     }
     m = malloc(sizeof(Map));
-    printf("\nbefore charger tileset\n");
+    LOG_DBG("before charger tileset");
     loadTilesetInMap(pRenderer, file, m);
-    printf("\ncharger tileset\n");
+    LOG_DBG("charger tileset");
     loadLevelInMap(file,m);
-    printf("\ncharger level\n");
+    LOG_DBG("charger level");
     m->largeur_fenetre = largeur_fenetre;
     m->hauteur_fenetre = hauteur_fenetre;
     m->xscroll = 0;
@@ -132,7 +132,7 @@ Map* ChargerMap(SDL_Renderer *pRenderer, const char* level, int largeur_fenetre,
 
 int AfficherMap(Map* m, SDL_Renderer* renderer, int xscroll,int yscroll) // Affiche la map � l'�cran
 {
-    printf("AfficherMap :: START\n");
+    LOG_DBG("AfficherMap :: START");
     int i,j;
     SDL_Rect Rect_dest;
     Rect_dest.w = TILE_WIDTH;
@@ -170,7 +170,7 @@ int AfficherMap(Map* m, SDL_Renderer* renderer, int xscroll,int yscroll) // Affi
         }
     }
 
-    printf("AfficherMap :: END\n");
+    LOG_DBG("AfficherMap :: END");
 
     return 0;
 }
@@ -241,7 +241,7 @@ int CollisionDecor(Map* carte, SDL_Rect* perso, SDL_Surface* screen){
                 
             //     AfficherMap(carte2,screen,carte2->xscroll,carte2->yscroll);
                 
-            //     printf("Changement map");
+            //     LOG_DBG("Changement map");
             //     return 0;
             // }
 
@@ -263,11 +263,11 @@ void ClampScroll(Map* m) {// permettre le scrolling
 
 int FocusScrollCenter(Map* carte,SDL_Rect* perso) // focus scrolling sur le dresseur
 {
-    printf("FocusScrollCenter :: START\n");
+    LOG_DBG("FocusScrollCenter :: START");
     carte->xscroll = perso->x + perso->w/2 - carte->largeur_fenetre/2;
     carte->yscroll = perso->y + perso->h/2 - carte->hauteur_fenetre/2;
     ClampScroll(carte);
-    printf("FocusScrollCenter :: END\n");
+    LOG_DBG("FocusScrollCenter :: END");
     return 0;
 }
 

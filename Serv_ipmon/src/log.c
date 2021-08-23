@@ -2,7 +2,8 @@
 #include "mysql_ipmon.h"
 #include "jeu_serv.h"
 
-#define DEBUG 1
+#include "logger.h"
+
 #define TAILLE_BUFF 200
 
 Dresseur *dresseur_list = NULL;
@@ -80,9 +81,9 @@ Ipmon* cree_Ipmon(int id, char* nom, char* etat, char* type, int typeEntier     
 void afficher_dresseur(Dresseur *dresseur_list){
     Dresseur* dresseur = dresseur_list;
     int i = 0;
-    printf("Liste des dresseurs connecté :\n");
+    LOG_INFO("Liste des dresseurs connecté :");
     while(dresseur != NULL){
-        printf(" Dresseur %d : %s map : %s cood %d:%d sock %d\n",i,dresseur->pseudo,dresseur->map,dresseur->coodX,dresseur->coodY,dresseur->sock);
+        LOG_INFO(" Dresseur %d : %s map : %s cood %d:%d sock %d",i,dresseur->pseudo,dresseur->map,dresseur->coodX,dresseur->coodY,dresseur->sock);
         dresseur = dresseur->next; i++;
     }
 }
@@ -117,7 +118,7 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
     MYSQL_ROW row;
 
     sprintf(requete,"SELECT * FROM ipdex,ipmon WHERE ipdex.dresseur = '%d' AND ipdex.ipmon = ipmon.Id_IPmon", dresseur->id);
-    printf("%s\n",requete);
+    LOG_INFO("%s",requete);
 
     if(mysql_query(ipmon_bdd, requete)){
                 finish_with_error(ipmon_bdd);
@@ -126,8 +127,7 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
     row = mysql_fetch_row(result);
     while(row){
         for(i=0;i<20;i++)
-            printf("%s ",row[i]);
-        printf("\n"); 
+            LOG_DBG("%s ",row[i]);
         ipmon_adv->id = strtol(row[3],NULL,10);ipmon_adv->typeEntier = strtol(row[7],NULL,10);
         
         snprintf(ipmon_adv->nom, MAX_SIZE_IPMON_STR, "%s", row[4]);
@@ -177,10 +177,10 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
     MYSQL_RES *result;
     MYSQL_ROW row; 
 
-    printf("Client : %d Pseudo :: %s et Mot de Passe : %s\n", *s_dial,pseudo, pass);
+    LOG_INFO("Client : %d Pseudo :: %s et Mot de Passe : %s", *s_dial,pseudo, pass);
 
     sprintf(requete, "SELECT * FROM dresseur WHERE dresseur_name='%s' AND dresseur_pass='%s';", pseudo, pass);
-    printf ("Client : %d Requete :: %s \n",*s_dial, requete);
+    LOG_INFO ("Client : %d Requete :: %s ",*s_dial, requete);
     /*On execute la requete DEBUT ZONE CRITIQUE*/
     pthread_mutex_lock(&mutex_client);
      
@@ -196,12 +196,11 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
     if(row)
     {
 
-        printf("row : ");
+        LOG_DBG("row : ");
         for(int i = 0; i < num_fields; i++)
         {
-            printf("%s ", row[i] ? row[i] : "NULL");
+            LOG_DBG("%s ", row[i] ? row[i] : "NULL");
         }
-        printf("\n");
         //              0               1                2              3               4                5                  6   
         // +-------------+---------------+---------------+--------------+----------------+----------------+------------------+
         // | dresseur_id | dresseur_name | dresseur_pass | dresseur_lvl | dresseur_pos_x | dresseur_pos_y | dresseur_map     |
@@ -233,22 +232,18 @@ int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass)
 
 /*Fonction qui communique avec le client pour ajouter un dresseur dans la base : ipmon*/
 void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass){
-#if (DEBUG>0)
-    printf("Insert_Dresseur");
-#endif
+    LOG_DBG("Insert_Dresseur");
     char requete[150] = "";
     /*On ajoute le pseudo et le pass dans la requete*/
     sprintf(requete, "INSERT INTO dresseur VALUES('0', '%s','%s', '1','300','150','tilesetIPMON.txt');", pseudo, pass);
-    printf ("Client : %d Requete :: %s \n", *s_dial,requete);
+    LOG_INFO ("Client : %d Requete :: %s", *s_dial,requete);
     /*On execute la requete DEBUT ZONE CRITIQUE*/
     pthread_mutex_lock(&mutex_client);
     // TODO manage error case and send response to client
     mysql_query(ipmon_bdd, requete);
     /* FIN zone critique */
     pthread_mutex_unlock (&mutex_client);
-#if (DEBUG >0)
-    printf ("Fin de zone critque query OK !");
-#endif
+    LOG_DBG ("Fin de zone critque query OK !");
 }
 
 
@@ -295,7 +290,7 @@ void *manage_player (void *data) {
     {
         pstring = string = strdup(buf);
 
-        printf("string: %s\n", string);
+        LOG_DBG("string: %s\n", string);
 
         if ((token = strsep(&string, ":")) != NULL)
         {
@@ -336,7 +331,7 @@ void *manage_player (void *data) {
 
     }
 
-    printf("CLOSED for one client !\n");
+    LOG_INFO("CLOSED for one client !");
     close (s_dial) ;
     free (data) ;
     return (NULL) ;

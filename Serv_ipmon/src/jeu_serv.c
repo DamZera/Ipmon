@@ -29,7 +29,7 @@ int jeu(int *s_dial, MYSQL* ipmon_bdd, Dresseur *dresseur_list, pthread_mutex_t*
         }
         else if(strcmp(msg->code,"123")==0){
             combat_init(ipmon_bdd,msg->data, s_dial);
-            printf("This part is not implemented !!!!!");
+            LOG_ERR("TO REFACTORE THIS PART PLS");
         }
         bzero(buf,TAILLE_BUFF);
         bzero(msg->code,50);
@@ -134,7 +134,7 @@ Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
     MYSQL_ROW row;
 
     sprintf(requete,"SELECT * FROM ipmon WHERE id_IPmon = '%d' ",id);
-    printf("requete = %s",requete);
+    LOG_DBG("requete = %s",requete);
 
     if(mysql_query(ipmon_bdd, requete)){
                 finish_with_error(ipmon_bdd);

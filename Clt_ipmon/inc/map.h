@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 
+#include "logger.h"
 
 typedef struct // tuiles (=images)
 {
