@@ -174,48 +174,6 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
 
     snprintf(buf, 200, "%d:%s:%s", REGISTER, pseudo, pass);
     send(socket_cli, buf, strlen(buf), 0);
-
-	//send(socket_cli, "001insert_dresseur", strlen("001insert_dresseur"),0);
-
-
-	/*while ((endWhile == 0) && (n = recv(socket_cli, buf, 80,0))) {
-			bzero(msg->code,4);
-			bzero(msg->data,77);
-			snprintf(msg->code, 4, "%s", buf);
-			snprintf(msg->data, 77, "%s", buf+3);
-#if (DEBUG > 0)
-			printf ("<buffer> [%s] msg->code : %s msg->data : %s \n", buf, msg->code , msg->data) ;
-#endif
-
-			if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"PSEUDO") == 0)){
-				strcpy(buf, "005");
-				strcat(buf, pseudo);
-				send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG > 0)
-				printf("buff in insert PSEUDO = %s\n", buf);
-#endif
-				bzero(buf, 80);
-			}else if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"PASS") == 0)){
-				bzero(buf, 80);
-				strcpy(buf, "006");
-				strcat(buf, pass);
-				send(socket_cli, buf, strlen(buf)+1,0);
-#if (DEBUG > 0)
-				printf("buff in insert PASS = %s\n", buf);
-#endif
-				bzero(buf, 80);
-			}else if((strcmp(msg->code,"001") == 0) && (strcmp(msg->data,"END") == 0)){
-				gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Enregistrement OK!");
-				endWhile = 1;
-				bzero(buf, 80);
-			}else{
-#if (DEBUG > 0)
-				printf("Message incorecte ou pas de message.\n");
-#endif		
-				bzero(buf, 80);	
-			}
-	}*/
-
 }
 
 gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){

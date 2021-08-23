@@ -1,14 +1,17 @@
-all: jeu_serv.o mysql_ipmon.o log.o
-	gcc -g -Wall jeu_serv.o mysql_ipmon.o log.o -o Serveur_ipm -L/usr/local/mysql/lib -lmysqlclient -lpthread 
+CC=gcc
+INC_DIR_COMMON=../Common/inc
+SRC_DIR=src
+SRCS=$(SRC_DIR)/*
+OBJS=jeu_serv.o mysql_ipmon.o log.o
 
-log.o: log.c log.h mysql_ipmon.h jeu_serv.h ../Common/inc/protocol.h
-	gcc -c log.c -o log.o 
+DEPS=$(INC_DIR_COMMON)/* inc/*
+LIBS=-L/usr/local/mysql/lib -lmysqlclient -lpthread
+CFLAGS=-c -Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
 
-mysql_ipmon.o: mysql_ipmon.c mysql_ipmon.h log.h
-	gcc -c mysql_ipmon.c -o mysql_ipmon.o 
+all: $(OBJS)
 
-jeu_serv.o: jeu_serv.c jeu_serv.h log.h
-	gcc -c jeu_serv.c -o jeu_serv.o
+%.o: $(SRC_DIR)/%.c $(DEPS)
+	$(CC) -o $@ $< $(CFLAGS)
 
 clean:
 	rm -rf *.o

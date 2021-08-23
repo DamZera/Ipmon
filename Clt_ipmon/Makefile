@@ -1,17 +1,17 @@
-all:  map.o main.o jeu.o  GUI_ipmon.o
-	gcc -g -Wall -o main main.o map.o jeu.o GUI_ipmon.o `pkg-config --cflags --libs gtk+-3.0` `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf
+CC=gcc
+INC_DIR_COMMON=../Common/inc
+SRC_DIR=src
+SRCS=$(SRC_DIR)/*
+OBJS=map.o main.o jeu.o  GUI_ipmon.o
 
-GUI_ipmon.o: GUI_ipmon.c map.h jeu.h
-	gcc -c `pkg-config --cflags --libs gtk+-3.0` GUI_ipmon.c -o GUI_ipmon.o 
+DEPS=$(INC_DIR_COMMON)/* inc/*
+LIBS=`pkg-config --cflags --libs gtk+-3.0` `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf
+CFLAGS=-c -Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
 
-main.o: main.c main.h ../Common/inc/protocol.h
-	gcc -c `pkg-config --cflags --libs gtk+-3.0` main.c -o main.o 
+all: $(OBJS)
 
-map.o: map.c map.h
-	gcc -c `pkg-config --cflags --libs gtk+-3.0` map.c -o map.o
-
-jeu.o: jeu.c jeu.h
-	gcc -c `pkg-config --cflags --libs gtk+-3.0` jeu.c -o jeu.o
+%.o: $(SRC_DIR)/%.c $(DEPS)
+	$(CC) -o $@ $< $(CFLAGS)
 
 clean:
 	rm -rf *.o
