@@ -1,9 +1,10 @@
 #ifndef GUI_IPMON_H
 #define GUI_IPMON_H
 
+#include "logger.h"
+
 #include "main.h"
 #include "map.h"
-#include "event.h"
 
 #include <unistd.h>
 #include <time.h>

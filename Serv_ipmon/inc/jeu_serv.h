@@ -3,6 +3,8 @@
 
 #include "log.h"
 
+#include "logger.h"
+
 int jeu(int *s_dial, MYSQL* ipmon_bdd, Dresseur *dresseur_list, pthread_mutex_t* mutex_client);
 void deplacement(char* data, int socket, pthread_mutex_t* mutex_client);
 void nouvelle_coord_dresseur(int coodX, int coodY, int socket);

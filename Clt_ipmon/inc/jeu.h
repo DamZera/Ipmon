@@ -2,19 +2,19 @@
 #define JEU_H
 
 #include "main.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <time.h>
 
 typedef struct{
-	int x;
-	int y;
+    int x;
+    int y;
 }Coord;
 
 typedef struct Dresseur_aff{
-	SDL_Rect perso, positiontexte;
-	SDL_Surface* texte;
-	struct Dresseur_aff* next;
+    SDL_Rect perso, positiontexte;
+    SDL_Surface* texte;
+    struct Dresseur_aff* next;
 }Dresseur_aff;
 
 

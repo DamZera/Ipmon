@@ -1,20 +1,18 @@
-all:  map.o event.o main.o jeu.o  GUI_ipmon.o
-	gcc -Wall -o main main.o map.o event.o jeu.o GUI_ipmon.o `pkg-config --cflags --libs gtk+-2.0` `sdl-config --cflags --libs` -lSDL_ttf
+CC=gcc
+INC_DIR_COMMON=../Common/inc
+SRC_DIR=src
+SRCS=$(SRC_DIR)/*
+OBJS=map.o main.o jeu.o  GUI_ipmon.o
 
-GUI_ipmon.o: GUI_ipmon.c event.h map.h jeu.h
-	gcc -c `pkg-config --cflags --libs gtk+-2.0` GUI_ipmon.c -o GUI_ipmon.o 
+DEPS=$(INC_DIR_COMMON)/* inc/*
+LIBS=`pkg-config --cflags --libs gtk+-3.0` `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf
+CFLAGS=-Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
 
-event.o: event.c event.h
-	gcc -c `pkg-config --cflags --libs gtk+-2.0` event.c -o event.o
+all: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o client $(CFLAGS)
 
-main.o: main.c main.h
-	gcc -c `pkg-config --cflags --libs gtk+-2.0` main.c -o main.o 
-
-map.o: map.c map.h
-	gcc -c `pkg-config --cflags --libs gtk+-2.0` map.c -o map.o
-
-jeu.o: jeu.c jeu.h
-	gcc -c `pkg-config --cflags --libs gtk+-2.0` jeu.c -o jeu.o
+%.o: $(SRC_DIR)/%.c $(DEPS)
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
 	rm -rf *.o
