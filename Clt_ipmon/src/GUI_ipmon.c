@@ -8,12 +8,11 @@ Dresseur_aff *dresseur_list_jeu;
 Dresseur *joueur;
 SDL_Texture *dresseurHaut = NULL, *dresseurBas = NULL , *dresseurGauche = NULL, *dresseurDroite = NULL, *dresseurActuel = NULL;
 
-void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRenderer,int xscroll,int yscroll,SDL_Surface* texte) // Deplacement du dresseur PETIT SOUCIS QUE JE N'ARRIVE PAS A REGLER LORS DE LACHEMENT DE BUTON J'AI TESTE AVEC UNE BOUCLE WHILE MAIS ECRAN NOIR!!!
+void DeplacerVecteur(const Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRenderer,int xscroll,int yscroll,SDL_Surface* texte) // Deplacement du dresseur PETIT SOUCIS QUE JE N'ARRIVE PAS A REGLER LORS DE LACHEMENT DE BUTON J'AI TESTE AVEC UNE BOUCLE WHILE MAIS ECRAN NOIR!!!
 {    
     LOG_DBG("DeplacerVecteur :: START");
     Dresseur_aff* dresseur = dresseur_list_jeu;
 
-    SDL_Event event;
     SDL_Rect positionsurecran = *perso, positiontexte = *perso;
     SDL_Rect postionpersoB, texteB;
     SDL_Rect imgSize;
@@ -28,11 +27,10 @@ void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRe
     int vitesse = MOVE_SPEED_PLAYER;
     *vx = *vy = 0;
 
-    LOG_DBG("DeplacerVecteur :: INIT DONE");
 
     //SDL_EnableKeyRepeat(100, 100);
         
-    /*while(dresseur != NULL){
+    while(dresseur != NULL){
         postionpersoB = dresseur->perso;
         texteB = dresseur->positiontexte;
         
@@ -40,11 +38,11 @@ void DeplacerVecteur(Uint8* in,int* vx,int* vy,SDL_Rect* perso,SDL_Renderer* pRe
         postionpersoB.y -= yscroll;
         texteB.x -= xscroll;
         texteB.y -= yscroll;
-        
-        //SDL_BlitSurface(dresseurBas, NULL, screen, &postionpersoB);
+
+        SDL_RenderCopy(pRenderer, dresseurBas, &imgSize, &postionpersoB);
         //SDL_BlitSurface(dresseur->texte, NULL, screen, &texteB);
         dresseur = dresseur->next;
-    }*/
+    }
     
 
     if (in[SDL_SCANCODE_UP]){
@@ -161,7 +159,6 @@ void jeu(int sock, Dresseur *dresseur){
 
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-        return 1;
     }
 
     SDL_Rect perso;
@@ -177,16 +174,12 @@ void jeu(int sock, Dresseur *dresseur){
     //police = TTF_OpenFont("./arial.ttf", 12); // police
     //texte = TTF_RenderText_Blended(police, dresseur->pseudo, couleurNoire); // ecriture du texte (exemple)
 
-    
-    SDL_Event event;
     Map* carte;
     //carte = malloc(sizeof(Map));
-    //Input in;
     int LARGEUR_TILE,HAUTEUR_TILE;
     int vx = 0,vy = 0;
     LARGEUR_TILE = 25;
     HAUTEUR_TILE = 25;
-    //memset(&in,0,sizeof(in));
 
     SDL_Renderer *pRenderer;
     SDL_Window *window = SDL_CreateWindow("My Game Window",
@@ -251,6 +244,8 @@ void jeu(int sock, Dresseur *dresseur){
 
         // 25 usec
         DeplacerVecteur(state, &vx, &vy, &perso, pRenderer, carte->xscroll, carte->yscroll, texte);
+
+        //dresseur_list_jeu = jeuAfficherDresseurs(sock, dresseur->map, NULL);
 
         if(elapsed > 250000){
             //printf("UPDATE !");

@@ -14,9 +14,11 @@
 #include <malloc.h>
 #include <mysql/mysql.h>
 #include "protocol.h"
+#include "circular_buffer.h"
 
 #define MAX_CLIENTS 5 
 #define MAX_SIZE_IPMON_STR 100
+#define CODE_INVALID 999
 
 
 typedef struct Ipmon {
@@ -47,29 +49,31 @@ typedef struct Dresseur{
     char* pseudo;
     char* map;
     int niveau;
-    int sock;
     int coodX;
     int coodY;
+    struct sockaddr_in cliaddr;
     struct Dresseur* next;
     Ipmon* ipmons;
 }Dresseur;
 
-typedef struct Message{
-    char code [4];
-    char data [100];
-}Message;
+typedef struct {
+    int socketServer;
+    CircularBuf* circBuffer;
+    Dresseur *dresseursList;
+} ServerThreadContext;
 
-
-char *str_sub (const char *s, unsigned int start, unsigned int end);
-
-void insert_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass);
-int connection_dresseur(int *s_dial, MYSQL* ipmon_bdd, char* pseudo, char* pass);
+int connectToIPMON(struct sockaddr_in* cliaddr, MYSQL* ipmon_bdd, char* pseudo, char* pass, ServerThreadContext* servCtx);
 void afficher_dresseur(Dresseur *dresseur_list);
 int next_client_num(Dresseur **dresseurs);
 void remove_dresseur(int socket);
-Dresseur* ajouter_dresseur(Dresseur *dresseur_list, int socket, char* pseudo, int coodX, int coodY, char* map, int id);
+Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* pseudo, int coodX, int coodY, char* map, int id);
 Dresseur* chercher_dresseur(Dresseur *dresseur_list,int socket);
+void newPositionOfPlayer(int coodX, int coodY, struct sockaddr_in* cliaddr, ServerThreadContext* servCtx);
+void sendPlayers(struct sockaddr_in* cliaddr,char *map, ServerThreadContext* servCtx);
 
 void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list);
+
+void processItemsInCircularBuffer(ServerThreadContext* servCtx);
+void *threadDownload(void *data);
 
 #endif

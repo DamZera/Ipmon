@@ -5,15 +5,17 @@ Dresseur_aff *dresseur_list_jeu;
 Dresseur* joueur;
 
 void jeuDeplacement(SDL_Rect perso, Coord *persoAvant, int sock){
-    char buf[80];
-    bzero(buf,80);
+    char buf[BUFFER_SIZE];
+    bzero(buf,BUFFER_SIZE);
+
+    LOG_DBG("perso.x %d perso.y %d persoAvant->x %d persoAvant->y %d", perso.x, perso.y, persoAvant->x, persoAvant->y);
     if(perso.x != persoAvant->x || perso.y != persoAvant->y){
         
-        sprintf(buf, "010%d:%d", perso.x, perso.y);
+        sprintf(buf, "%d:%d:%d", NEW_COORDINATES, perso.x, perso.y);
         
-        //send(sock,buf,strlen(buf),0);
-        //recv(sock,buf,80,0);
-        bzero(buf,80);
+        send(sock,buf,strlen(buf),0);
+        //recv(sock,buf,BUFFER_SIZE,0);
+        bzero(buf,BUFFER_SIZE);
         persoAvant->y = perso.y;
         persoAvant->x = perso.x;
     }
@@ -24,11 +26,11 @@ void jeuInitjoueur(Dresseur* joueurInit){
 }
 
 Dresseur_aff* jeuAfficherDresseurs(int sock,char* map, TTF_Font *police){
-    char buf[80];
-    char pseudo [80];
+    char buf[BUFFER_SIZE];
+    char pseudo [BUFFER_SIZE];
     char* token;
     int coodX,coodY;
-    bzero(buf,80);
+    bzero(buf,BUFFER_SIZE);
     int n, end = 0;
     
     SDL_Surface* dresseurB;
@@ -38,40 +40,45 @@ Dresseur_aff* jeuAfficherDresseurs(int sock,char* map, TTF_Font *police){
     perso.h = 25;
     positiontexte = perso;
     
-    sprintf(buf,"011%s",map);
+    sprintf(buf,"%d:%s", SEND_LIST_PLAYERS, map);
     send(sock,buf,strlen(buf),0);
-    bzero(buf,80);
+    bzero(buf,BUFFER_SIZE);
     
     dresseur_list_jeu = vider_dresseur_liste(dresseur_list_jeu);
     
-    while(end == 0 && (n = recv(sock,buf,80,0))){
-        test++;
-        printf("buf : %s Test %d\n",buf,test);
-        if(strcmp(buf,"000end")==0)
-            end = 1;
-        else{
-            printf("jeuAfficherDresseurs :: %s\n",buf);
-            token = strtok(buf, ":");
-            strcpy(pseudo,token);
-               token = strtok(NULL, ":");
-               coodX = strtol(token, NULL, 10);
-               token = strtok(NULL, ":");
-               coodY = strtol(token, NULL, 10);
-               token = strtok(NULL, ":");
-               
-               SDL_Color couleurNoire = {0, 0, 0}; //couleur noir
-               texte = TTF_RenderText_Blended(police, pseudo, couleurNoire);
-               perso.x = coodX;
-               perso.y = coodY;
-               
-               positiontexte.x = perso.x - (texte->w /2) + (perso.w/2);
-            positiontexte.y = perso.y -10;
-            dresseur_list_jeu = ajouter_dresseur_aff(dresseur_list_jeu,&perso,&positiontexte,texte);
-            send(sock,"recu",strlen("recu"),0);
-        }
-        
-        bzero(buf,80);
-        bzero(pseudo,80);
+    // TODO refactor with on big buff and try UDP
+    while(end == 0){
+        n = recv(sock,buf,BUFFER_SIZE,0);
+        /*if (n > 0)
+        {
+            test++;
+            LOG_DBG("buf : %s Test %d",buf,test);
+            if(strcmp(buf,"000end")==0)
+                end = 1;
+            else{
+                printf("jeuAfficherDresseurs :: %s\n",buf);
+                token = strtok(buf, ":");
+                strcpy(pseudo,token);
+                token = strtok(NULL, ":");
+                coodX = strtol(token, NULL, 10);
+                token = strtok(NULL, ":");
+                coodY = strtol(token, NULL, 10);
+                token = strtok(NULL, ":");
+                
+                //SDL_Color couleurNoire = {0, 0, 0}; //couleur noir
+                //texte = TTF_RenderText_Blended(police, pseudo, couleurNoire);
+                perso.x = coodX;
+                perso.y = coodY;
+                
+                //positiontexte.x = perso.x - (texte->w /2) + (perso.w/2);
+                //positiontexte.y = perso.y -10;
+                dresseur_list_jeu = ajouter_dresseur_aff(dresseur_list_jeu,&perso,&positiontexte,texte);
+                //send(sock,"recu",strlen("recu"),0);
+            }
+            
+            bzero(buf,BUFFER_SIZE);
+            bzero(pseudo,BUFFER_SIZE);
+        }*/
     }
     return dresseur_list_jeu;
 }
@@ -117,7 +124,7 @@ Dresseur_aff* vider_dresseur_liste(Dresseur_aff *dresseur_list_jeu){
 }
 int jeuCombat(int sock){
     int combat = 0, idpokemonAdv = 0, end = 0, msg;
-    char buf[80]; bzero(buf,80);
+    char buf[BUFFER_SIZE]; bzero(buf,BUFFER_SIZE);
     //char* token;
     
     combat = rand()%300;
@@ -126,10 +133,10 @@ int jeuCombat(int sock){
         idpokemonAdv = rand()%50+1;
         printf("Combat contre pokemon id = %d\n",idpokemonAdv);
         /*send(sock,buf,strlen(buf),0);
-        bzero(buf,80);
+        bzero(buf,BUFFER_SIZE);
         printf("Socket = %d\n",sock );
-        bzero(buf,80);
-        while((end == 0) && (recv(sock,buf,80,0))){
+        bzero(buf,BUFFER_SIZE);
+        while((end == 0) && (recv(sock,buf,BUFFER_SIZE,0))){
             printf("buff : %s",buf);
             Ipmon *ipmon_adv = malloc(sizeof(Ipmon));
             token = strtok(buf, ":");
@@ -146,7 +153,7 @@ int jeuCombat(int sock){
                 send(sock,"recu",strlen("recu"),0);
             }
             affichage_combat(msg, sock);
-            bzero(buf,80);
+            bzero(buf,BUFFER_SIZE);
         }*/
     }
 }
@@ -154,7 +161,7 @@ int jeuCombat(int sock){
 int affichage_combat(int msg, int sock){
     
     printf("STUBED must be reworked");
-    //char buf[80];
+    //char buf[BUFFER_SIZE];
     //char* token;
     //int choix_ipmon;
     //Ipmon *ipmon = joueur->ipmons;
@@ -176,7 +183,7 @@ int affichage_combat(int msg, int sock){
     //         send(sock,buf,strlen(buf),0);
     //         break;
     //     case 2:
-    //         recv(sock,buf,80,0);
+    //         recv(sock,buf,BUFFER_SIZE,0);
     //         token = strtok(buf, ":");
     //         ipmon_adv->id = strtol(token,NULL,10);
     //         token = strtok(NULL, ":");
@@ -190,9 +197,9 @@ int affichage_combat(int msg, int sock){
     //         token = NULL;
 
 
-    //         bzero(buf,80);
+    //         bzero(buf,BUFFER_SIZE);
     //         send(sock,"recu",strlen("recu"),0);
-    //         recv(sock,buf,80,0);
+    //         recv(sock,buf,BUFFER_SIZE,0);
     //         token = strtok(buf, ":");
     //         ipmon_adv->pv = strtol(token,NULL,10);
     //         token = strtok(NULL, ":");
@@ -205,9 +212,9 @@ int affichage_combat(int msg, int sock){
     //         ipmon_adv->nom_attaque = token;
     //         token = NULL;
 
-    //         bzero(buf,80);
+    //         bzero(buf,BUFFER_SIZE);
     //         send(sock,"recu",strlen("recu"),0);
-    //         recv(sock,buf,80,0);
+    //         recv(sock,buf,BUFFER_SIZE,0);
     //         token = strtok(buf, ":");
     //         ipmon_adv->precision_attaque = strtol(token,NULL,10);
     //         token = strtok(NULL, ":");
@@ -220,9 +227,9 @@ int affichage_combat(int msg, int sock){
     //         ipmon_adv->precision = strtol(token,NULL,10);
     //         token = NULL;
 
-    //         bzero(buf,80);
+    //         bzero(buf,BUFFER_SIZE);
     //         send(sock,"recu",strlen("recu"),0);
-    //         recv(sock,buf,80,0);
+    //         recv(sock,buf,BUFFER_SIZE,0);
     //         token = strtok(buf, ":");
     //         ipmon_adv->puissance_attaque_special = strtol(token,NULL,10);
     //         token = strtok(NULL, ":");
@@ -235,7 +242,7 @@ int affichage_combat(int msg, int sock){
     //         ipmon_adv->nom_defense_special = token;
     //         token = NULL;
 
-    //         bzero(buf,80);
+    //         bzero(buf,BUFFER_SIZE);
     //         printf("\nIpmon sauvage : \n\tId : %d\n\tNom : %s\n\tEtat : %s\n\tType : %s\n\tPoint de vie : %d\n\tAgilité : %d\n\tNiveau : %d\n\tPuissance attaque : %d\n\tNom attaque : %s\n\tPuissance défense : %d\n\tNom défense : %s\n\t", ipmon_adv->id, ipmon_adv->nom, ipmon_adv->etat, ipmon_adv->type, ipmon_adv->pv, ipmon_adv->agilite, ipmon_adv->niveau, ipmon_adv->puissance_attaque, ipmon_adv->nom_attaque, ipmon_adv->puissance_defense, ipmon_adv->nom_defense);
     //         printf("Entrer l'id du pokemon choisi :\n");
     //         scanf("%d",&choix_ipmon);

@@ -314,8 +314,8 @@ int main(int argc, char *argv[])  {
     SDL_Init(SDL_INIT_VIDEO);
     dresseur = malloc(sizeof(Dresseur));
     int s_cli, connect = 0, end = 0,n;
-    char buf[80];
-    bzero(buf,80);
+    char buf[BUFFER_SIZE];
+    bzero(buf,BUFFER_SIZE);
 
     if(argc == 3 && argv[1] != NULL && argv[2]!= NULL){
         s_cli = connect_serv_Ipmon(argv[1],strtol(argv[2],NULL,10));
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])  {
         jeu(socket_cli, dresseur);
     }
 
-    snprintf(buf, 80, "%d", CLOSE_CLIENT);
+    snprintf(buf, BUFFER_SIZE, "%d", CLOSE_CLIENT);
     send(socket_cli, buf, strlen(buf), 0);
     sleep(1); // wait last message
     shutdown(socket_cli, SHUT_RDWR);

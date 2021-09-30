@@ -45,7 +45,7 @@ int chercherDresseur (int id) {
     int i;
 
     for (i = 0; i < 100; i++) {
-        if (dresseurs[i].id == id)
+        //if (dresseurs[i].id == id)
             return 0;
     }
     return -1;
