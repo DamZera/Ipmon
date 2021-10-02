@@ -182,14 +182,15 @@ void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
 void newPositionOfPlayer(int coodX, int coodY, struct sockaddr_in* cliaddr, ServerThreadContext* servCtx)
 {
     Dresseur* dresseur = servCtx->dresseursList;
-
-    //LOG_DBG("Enter newPosition %d:%d %d", coodX, coodY, cliaddr->sin_port);
     
     while(dresseur != NULL)
     {
         if((dresseur->cliaddr.sin_addr.s_addr == cliaddr->sin_addr.s_addr)
             && (dresseur->cliaddr.sin_port == cliaddr->sin_port))
         {
+            // To many log
+            // LOG_DBG("newPositionOfPlayer %d:%s -> %d:%d",
+            //     cliaddr->sin_port, dresseur->pseudo, coodX, coodY);
             dresseur->coodX = coodX;
             dresseur->coodY = coodY;
             break;
@@ -209,27 +210,18 @@ void sendPlayers(struct sockaddr_in* cliaddr, char *map, ServerThreadContext* se
 
     Dresseur* dresseur = servCtx->dresseursList;
 
-    LOG_DBG("sendPlayers START with map %s", map);
-
     while(dresseur != NULL)
     {
         if(strcmp(dresseur->map, map) == 0 
-            && (dresseur->cliaddr.sin_addr.s_addr != cliaddr->sin_addr.s_addr)
-            && (dresseur->cliaddr.sin_port != cliaddr->sin_port))
+            && ((dresseur->cliaddr.sin_addr.s_addr != cliaddr->sin_addr.s_addr)
+                || (dresseur->cliaddr.sin_port != cliaddr->sin_port)))
         {
-            sprintf(low_buff,"%s:%d:%d",dresseur->pseudo,dresseur->coodX,dresseur->coodY);
             bzero(low_buff,BUFFER_SIZE);
+            sprintf(low_buff,"%s:%d:%d+",dresseur->pseudo,dresseur->coodX,dresseur->coodY);
             strcat(buf, low_buff);
-            //recv(*s_dial,buf,BUFFER_SIZE,0);
-            //printf("Sock : %d buf : /%s/",*s_dial,buf);
         }
         //bzero(buf,BUFFER_SIZE);
         dresseur = dresseur->next;
-        if (dresseur != NULL)
-        {
-            strcat(buf, "+");
-        }
-        
     }
 
     err = sendto(servCtx->socketServer, buf, strlen(buf),
@@ -239,7 +231,6 @@ void sendPlayers(struct sockaddr_in* cliaddr, char *map, ServerThreadContext* se
     {
         LOG_ERR("sendto : %s", strerror(errno));
     }
-    //send(*s_dial,"000end",strlen("000end"),0);
     //LOG_DBG("sendPlayers END");
 }
 
@@ -289,8 +280,8 @@ int createUdpSocket(int port, int nb_max_clients) {
   serv_addr.sin_port = htons (port);
   memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
 
-  socketServer = socket (AF_INET, SOCK_DGRAM, 0);
-  bind (socketServer, (struct sockaddr *)&serv_addr, sizeof serv_addr);
+  socketServer = socket(AF_INET, SOCK_DGRAM, 0);
+  bind(socketServer, (struct sockaddr *)&serv_addr, sizeof serv_addr);
 
   return socketServer;
 }
@@ -302,6 +293,7 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
     char pseudo[200] = "";
     char pass[200] = "";
     int code = CODE_INVALID;
+    int err;
     
     MYSQL *ipmon_bdd;
     struct sockaddr_in cliaddr;
@@ -314,18 +306,20 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
         memset(pass, 0, 200);
         memset(pseudo, 0, 200);
         code = CODE_INVALID;
-        sleep(1);
-        if (ERR_NOERROR == circularBufEmpty(servCtx->circBuffer))
+        pthread_mutex_lock(&globalMutex);
+        err = circularBufEmpty(servCtx->circBuffer);
+        pthread_mutex_unlock(&globalMutex);
+        if (ERR_NOERROR == err)
         {
+            pthread_mutex_lock(&globalMutex);
             circularBufRead(servCtx->circBuffer, &message, &cliaddr);
-            LOG_DBG("Consumer receive : %s", message);
+            pthread_mutex_unlock(&globalMutex);
 
             token = strsep(&message, ":");
 
             if (token != NULL && message != NULL)
             {
                 code = strtol(token, NULL, 10);
-                LOG_DBG("code : %d", code);
                 /*************************************
                 * CONNECTION OR REGISTER
                 **************************************/
@@ -372,10 +366,13 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
                         break;
                     y = strtol(token, NULL, 10);
                     newPositionOfPlayer(x, y, &cliaddr, servCtx);
+                    sendPlayers(&cliaddr, strsep(&message, ":"), servCtx);
+
                 }
                 else if (code == SEND_LIST_PLAYERS) {
-                    // TODO fix second argument
-                    sendPlayers(&cliaddr, strsep(&message, ":"), servCtx); 
+                    // TODO fix second argument DO NOTHING
+                    LOG_WARN("Old API, use NEW_COORDINATES to receive list of players");
+                    //sendPlayers(&cliaddr, strsep(&message, ":"), servCtx); 
                 }
             }
             else
@@ -387,6 +384,11 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
             }
 
             message = NULL;
+        }
+        else
+        {
+            // circular buffer is empty
+            usleep(10000); // 10ms
         }
     }
 }
@@ -401,6 +403,7 @@ void *threadDownload(void *data)
     int len, n;
     char buffer[1024];
     char ip[24];
+    int err = ERR_NOERROR;
   
     len = sizeof(cliaddr);  //len is value/resuslt
   
@@ -410,8 +413,14 @@ void *threadDownload(void *data)
         buffer[n] = '\0';
         inet_ntop(AF_INET, &(((struct sockaddr_in*)&cliaddr)->sin_addr),
                     ip, 24);
-        LOG_DBG("Client[%s] : %s", ip, buffer);
-        circularBufPut(servCtx->circBuffer, buffer, &cliaddr);
+        //LOG_DBG("Client[%s] : %s", ip, buffer);
+        pthread_mutex_lock(&globalMutex);
+        err = circularBufPut(servCtx->circBuffer, buffer, &cliaddr);
+        pthread_mutex_unlock(&globalMutex);
+        if (err != ERR_NOERROR)
+        {
+            LOG_WARN("threadDownload %d if 1 = FULL", err);
+        }
         // sendto(servCtx->socketServer, "msg receive ;)\n", strlen("msg receive ;)"), 
         //     MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len);
         memset(&cliaddr, 0, sizeof(cliaddr));

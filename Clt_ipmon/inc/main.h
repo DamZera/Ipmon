@@ -21,6 +21,8 @@ typedef struct Login{
     GtkWidget *champ_login;
     GtkWidget *champ_pass;
     GtkWidget *fenetre;
+    struct sockaddr_in* srvaddr;
+    int socket;
     int connect;
 }Login;
 
@@ -72,9 +74,8 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data);
 
 
 int menu_gtk();
-int connect_serv_Ipmon(char* adresse, int port);
+int connectToIpmonServer(int port);
 void insert_dresseur(int *s_cli);
 int connection_dresseur(int *s_cli);
-Ipmon* ajouterIpmon(Ipmon* ipmon_list,int id,char* nom,char* etat,char* type,int typeEntier,int pv,int agilite,int niveau,int puissance_attaque,char* nom_attaque,int precision_attaque,int puissance_defense,int esquive,int precision,int puissance_attaque_special,int precision_attaque_special,char* nom_attaque_special,int puissance_defense_special);
 
 #endif 

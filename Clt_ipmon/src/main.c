@@ -5,138 +5,7 @@
 #define HAUTEUR_FENETRE 480
 #define DEBUG 1
 
-int socket_cli = 0;
 Dresseur *dresseur;
-
-Ipmon* ajouterIpmon(Ipmon* ipmon_list,int id,char* nom,char* etat,char* type,int typeEntier,int pv,int agilite,int niveau,int puissance_attaque,char* nom_attaque,int precision_attaque,int puissance_defense,int esquive,int precision,int puissance_attaque_special,int precision_attaque_special,char* nom_attaque_special,int puissance_defense_special){
-    Ipmon* ipmon = malloc(sizeof(Ipmon));
-    
-    ipmon->id=id;
-    ipmon->nom = malloc(sizeof(char)*strlen(nom));
-    ipmon->etat= malloc(sizeof(char)*strlen(etat));
-    ipmon->type= malloc(sizeof(char)*strlen(type));
-    ipmon->nom_attaque= malloc(sizeof(char)*strlen(nom_attaque));
-    ipmon->nom_attaque_special= malloc(sizeof(char)*strlen(nom_attaque_special));
-    ipmon->nom= nom;
-    ipmon->etat= etat;
-    ipmon->type= type;
-    ipmon->typeEntier= typeEntier; //Valeur du type d'ipmon : intervient dans le calcul du succès ou non d'une attaque
-    ipmon->pv= pv; //Point de vie
-    ipmon->agilite = agilite; //Rapidité de reaction d'un ipmon
-    ipmon->niveau= niveau; //Niveau de l'ipmon : intervient dans le calcul du degat subit par un ipmon [1 - 100]
-    ipmon->puissance_attaque= puissance_attaque; //Puissance d'attaque simple
-    ipmon->nom_attaque= nom_attaque;
-    ipmon->precision_attaque= precision_attaque;//Précision de l'attaque simple
-    ipmon->puissance_defense= puissance_defense; //Puissance de defense : intervient dans le calcul du degat subit par un ipmon
-    ipmon->esquive= esquive; //Capacité d'esquive d'un ipmon : intervient dans le calcul du succès ou non d'une attaque = 100
-    ipmon->precision =precision; //Précision de l'ipmon
-    ipmon->puissance_attaque_special= puissance_attaque_special;//Puissance de l'attaque spéciale d'un ipmon
-    ipmon->precision_attaque_special= precision_attaque_special;//Précision de l'attaque spéciale d'un ipmon
-    ipmon->nom_attaque_special= nom_attaque_special;
-    ipmon->puissance_defense_special= puissance_defense_special;//Puissance de la défense spéciale d'un ipmon : intervient lorsqu'un ipmon est attaqué par une attaque spéciale
-
-    
-     if(ipmon_list == NULL){
-        return ipmon;
-    }
-    else
-    {
-        Ipmon* tmp = ipmon_list;
-        while(tmp != NULL)
-        {
-            tmp = tmp->next;
-        }
-        tmp = ipmon;
-        return ipmon_list;
-    }
-}
-
-void ajoutIpmon(int socket_cli){
-        int n, end = 0, i = 0;
-        Ipmon* ipmon_adv;
-        char* token;
-        char buf[80];
-        dresseur->ipmons = NULL;
-        
-        while((end == 0) && recv(socket_cli,buf,80,0)){
-            if(strcmp(buf,"end") ==0){
-                end = 1;
-            }else{
-                ipmon_adv =  malloc(sizeof(Ipmon));
-                int id;
-                char* nom;
-                
-                ipmon_adv->etat = malloc(sizeof(char)*50);
-                ipmon_adv->type = malloc(sizeof(char)*50);
-                ipmon_adv->nom_attaque = malloc(sizeof(char)*50);
-                ipmon_adv->nom_attaque_special = malloc(sizeof(char)*50);
-                LOG_DBG("buf :: %s pok  %d",buf,i);
-                i++;
-                token = strtok(buf, ":");
-                ipmon_adv->id = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->nom = malloc(sizeof(char)*strlen(token));
-                ipmon_adv->nom = token;
-                token = strtok(NULL, ":");
-                ipmon_adv->etat = malloc(sizeof(char)*strlen(token));
-                ipmon_adv->etat = token;
-                token = strtok(NULL, ":");
-                ipmon_adv->type = malloc(sizeof(char)*strlen(token));
-                ipmon_adv->type = token;
-                token = strtok(NULL, ":");
-                ipmon_adv->typeEntier = strtol(token,NULL,10);;
-                token = NULL;
-
-
-                bzero(buf,80);
-                send(socket_cli,"recu",strlen("recu"),0);
-                recv(socket_cli,buf,80,0);
-                token = strtok(buf, ":");
-                ipmon_adv->pv = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->agilite = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->niveau = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->puissance_attaque = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->nom_attaque = malloc(sizeof(char)*strlen(token));
-                ipmon_adv->nom_attaque = token;
-                token = NULL;
-
-                bzero(buf,80);
-                send(socket_cli,"recu",strlen("recu"),0);
-                recv(socket_cli,buf,80,0);
-                token = strtok(buf, ":");
-                ipmon_adv->precision_attaque = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->puissance_defense = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->esquive = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->precision = strtol(token,NULL,10);
-                token = NULL;
-
-                bzero(buf,80);
-                send(socket_cli,"recu",strlen("recu"),0);
-                recv(socket_cli,buf,80,0);
-                token = strtok(buf, ":");
-                ipmon_adv->puissance_attaque_special = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->precision_attaque_special = strtol(token,NULL,10);
-                token = strtok(NULL, ":");
-                ipmon_adv->nom_attaque_special = malloc(sizeof(char)*strlen(token));
-                ipmon_adv->nom_attaque_special = token;
-                token = strtok(NULL, ":");
-                LOG_DBG("buf defence :: %s pok  %d",token,i);
-                ipmon_adv->puissance_defense_special = strtol(token,NULL,10);
-                token = NULL;
-                bzero(buf,80);
-                send(socket_cli,"recu",strlen("recu"),0);
-                dresseur->ipmons = ajouterIpmon(dresseur->ipmons,ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier,ipmon_adv->pv,ipmon_adv->agilite,ipmon_adv->niveau,ipmon_adv->puissance_attaque,ipmon_adv->nom_attaque,ipmon_adv->precision_attaque,ipmon_adv->puissance_defense,ipmon_adv->esquive,ipmon_adv->precision,ipmon_adv->puissance_attaque_special,ipmon_adv->precision_attaque_special,ipmon_adv->nom_attaque_special,ipmon_adv->puissance_defense_special);
-            }
-        }
-}
 
 gboolean cb_quit (GtkWidget *p_widget, gpointer user_data)
 {
@@ -144,19 +13,26 @@ gboolean cb_quit (GtkWidget *p_widget, gpointer user_data)
     return FALSE;
 }
 
-int connect_serv_Ipmon(char* adresse, int port){
-    int s_cli ;
-    int erreur;
-    struct sockaddr_in serv_addr ;
+int connectToIpmonServer(int port)
+{
+    int s_cli;
+    int err;
 
-    s_cli = socket (PF_INET, SOCK_STREAM, 0) ;
-    serv_addr.sin_family = AF_INET ;
-    serv_addr.sin_addr.s_addr = inet_addr (adresse) ;
-    serv_addr.sin_port = htons (port) ;
+    struct sockaddr_in serv_addr;
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
+    serv_addr.sin_port = htons (port);
     memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
-    erreur = connect (s_cli, (struct sockaddr *)&serv_addr, sizeof serv_addr) ;
-    if(erreur == -1)
-        s_cli = -1;
+
+    s_cli = socket (AF_INET, SOCK_DGRAM, 0);
+    err = bind(s_cli, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    if(err == -1)
+    {
+        LOG_ERR("Bind failed for socket %d", s_cli);
+        return -1;
+    }
+
     return s_cli;
 }
 
@@ -165,15 +41,14 @@ void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
     char pseudo[50];
     char pass[50];    
     char buf [200];
-    int n , endWhile = 0;
-    Message* msg = (Message*)malloc(sizeof(Message));
     bzero(buf, 200);
 
     strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
     strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
 
     snprintf(buf, 200, "%d:%s:%s", REGISTER_TO_IPMON, pseudo, pass);
-    send(socket_cli, buf, strlen(buf), 0);
+    sendto(login->socket, buf, strlen(buf), MSG_CONFIRM,
+        (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 }
 
 gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
@@ -184,6 +59,13 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     char pass[50];    
         
     int n ;
+
+
+    struct sockaddr_in rcvaddr;
+    memset(&rcvaddr, 0, sizeof(rcvaddr));
+
+    int len;
+    len = sizeof(rcvaddr);  //len is value/resuslt
     
     // TODO strncpy more secure
     strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
@@ -191,10 +73,12 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     
     bzero(buffer, 200);
     snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, pseudo, pass);
-    send(socket_cli, buffer, strlen(buffer), 0);
+    sendto(login->socket, buffer, strlen(buffer), MSG_CONFIRM,
+        (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 
     bzero(buffer, 200);
-    n = recv(socket_cli, buffer, 200,0);
+    n = recvfrom(login->socket, (char *)buffer, 200, 
+                MSG_WAITALL, ( struct sockaddr *) &rcvaddr, &len);
     LOG_INFO("message: %s ", buffer);
     
     pstring = string = strdup(buffer);
@@ -241,7 +125,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     return TRUE;
 }
 
-int menu_gtk(){
+int menu_gtk(int socket, struct sockaddr_in* srvaddr){
     Login *login = (Login*)malloc(sizeof(Login));
     GtkWidget* fenetre;  
     GtkWidget *bouton_connect = NULL, *bouton_enregistrer = NULL, *bouton_quitter = NULL;
@@ -299,6 +183,8 @@ int menu_gtk(){
     login->champ_login = champ_login;
     login->champ_pass = champ_pass;
     login->fenetre = fenetre;
+    login->socket = socket;
+    login->srvaddr = srvaddr;
     login->connect = 0;
       
     gtk_widget_show_all(fenetre);  
@@ -310,38 +196,50 @@ int menu_gtk(){
     return login->connect;
 }
       
-int main(int argc, char *argv[])  {
-    SDL_Init(SDL_INIT_VIDEO);
+int main(int argc, char *argv[])
+{
     dresseur = malloc(sizeof(Dresseur));
     int s_cli, connect = 0, end = 0,n;
     char buf[BUFFER_SIZE];
     bzero(buf,BUFFER_SIZE);
 
-    if(argc == 3 && argv[1] != NULL && argv[2]!= NULL){
-        s_cli = connect_serv_Ipmon(argv[1],strtol(argv[2],NULL,10));
-        if(s_cli == -1){
-            LOG_ERR("Connection between client and server failed ! IP<%s> Port<%s>", argv[1], argv[2]);
+    struct sockaddr_in serv_addr;
+
+    if(argc == 4 && argv[1] != NULL && argv[2]!= NULL){
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_addr.s_addr = inet_addr (argv[1]);
+        serv_addr.sin_port = htons (strtol(argv[2],NULL,10));
+        memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
+
+        s_cli = connectToIpmonServer(strtol(argv[3],NULL,10));
+        if(s_cli == -1)
+        {
+            LOG_ERR("Connection between client and server failed ! IP<%s> portServer<%s> port<%s>",
+                argv[1], argv[2], argv[3]);
             return 1;
         }
-    }else{
+    }
+    else
+    {
         LOG_ERR("Usage: clt_ipmon address port");
         return 0;
     }
-    socket_cli = s_cli;
     
     gtk_init(NULL, NULL);
     
-    connect = menu_gtk();
+    connect = menu_gtk(s_cli, &serv_addr);
+
+    SDL_Init(SDL_INIT_VIDEO);
     
     if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
-        jeu(socket_cli, dresseur);
+        jeu(s_cli, &serv_addr, dresseur);
     }
 
     snprintf(buf, BUFFER_SIZE, "%d", CLOSE_CLIENT);
-    send(socket_cli, buf, strlen(buf), 0);
+    send(s_cli, buf, strlen(buf), 0);
     sleep(1); // wait last message
-    shutdown(socket_cli, SHUT_RDWR);
-    close(socket_cli);
+    shutdown(s_cli, SHUT_RDWR);
+    close(s_cli);
     LOG_ERR("CLOSE !!");
 
     return 0;  
