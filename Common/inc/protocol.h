@@ -3,11 +3,13 @@
 
 typedef enum 
 {
-    CONNECT_TO_IPMON          = 0,
-    REGISTER_TO_IPMON         = 2,
-    NEW_COORDINATES           = 4,
-    COMBAT                    = 6,
-    CLOSE_CLIENT              = 8
+    // O is use by strtol in case of error !
+    CONNECT_TO_IPMON          = 2,
+    REGISTER_TO_IPMON         = 4,
+    NEW_COORDINATES           = 6,
+    COMBAT                    = 8,
+    SEND_LIST_PLAYERS         = 10,
+    CLOSE_CLIENT              = 12
 } client_code_msg;
 
 typedef enum 
@@ -17,5 +19,8 @@ typedef enum
     ACCEPT_REGISTER           = 5,
     REFUSE_REGISTER           = 7
 } server_code_msg;
+
+#define BUFFER_SIZE 200
+#define BIG_BUFFER_SIZE 2048
 
 #endif

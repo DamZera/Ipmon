@@ -1,122 +1,36 @@
 #include "jeu_serv.h"
 
-#define TAILLE_BUFF 80
-Dresseur *dresseur_list_jeu;
-
-// TODO refactor with new code and test
-int jeu(int *s_dial, MYSQL* ipmon_bdd, Dresseur *dresseur_list, pthread_mutex_t* mutex_client){
-    char buf [TAILLE_BUFF];
-    int n, end = 0;
-    Message *msg = (Message*)malloc(sizeof(Message));
-    bzero(buf,TAILLE_BUFF);
-    dresseur_list_jeu = dresseur_list;
-    
-    while (end == 0 && (n = recv(*s_dial, buf, TAILLE_BUFF,0))) {
-        snprintf(msg->code, 4, "%s", buf);
-        snprintf(msg->data, 100, "%s", buf+3);
-        
-        if(strcmp(msg->code,"010")==0){
-            deplacement(msg->data, *s_dial,mutex_client);
-            send(*s_dial,"recu",strlen("recu"),0);
-        }else if(strcmp(msg->code,"end")==0){
-            send(*s_dial,"recu",strlen("recu"),0);
-            end = 1;
-        }
-        else if(strcmp(msg->code,"011")==0){
-            pthread_mutex_lock(mutex_client);
-            envoieDresseurs(s_dial,msg->data);
-            pthread_mutex_unlock(mutex_client);
-        }
-        else if(strcmp(msg->code,"123")==0){
-            combat_init(ipmon_bdd,msg->data, s_dial);
-            LOG_ERR("TO REFACTORE THIS PART PLS");
-        }
-        bzero(buf,TAILLE_BUFF);
-        bzero(msg->code,50);
-        bzero(msg->data,50);
-    }
-    return 0;
-}
-
-void deplacement(char* data, int socket,pthread_mutex_t* mutex_client){
-    int coodX, coodY;
-    char* token;
-    
-    token = strtok(data, ":");
-    coodX = strtol(token, NULL, 10);
-       token = strtok(NULL, ":");
-       coodY = strtol(token, NULL, 10);
-       token = strtok(NULL, ":");
-       
-       /*Changement cood sans la liste*/
-    pthread_mutex_lock(mutex_client);
-    nouvelle_coord_dresseur(coodX, coodY, socket);
-    pthread_mutex_unlock(mutex_client);
-}
-
-void nouvelle_coord_dresseur(int coodX, int coodY, int socket){
-    Dresseur* dresseur = dresseur_list_jeu;
-    
-    while(dresseur != NULL){
-        if(dresseur->sock == socket){
-            dresseur->coodX = coodX;
-            dresseur->coodY = coodY;
-        }
-        dresseur = dresseur->next;
-    }
-}
-
-void envoieDresseurs(int *s_dial,char *map){
-    char buf[80];
-    bzero(buf,80);
-    Dresseur* dresseur = dresseur_list_jeu;
-
-    while(dresseur != NULL){
-        if(strcmp(dresseur->map,map) == 0 && (dresseur->sock != *s_dial)){
-            sprintf(buf,"%s:%d:%d",dresseur->pseudo,dresseur->coodX,dresseur->coodY);
-            send(*s_dial,buf,strlen(buf),0);
-            bzero(buf,80);
-            recv(*s_dial,buf,80,0);
-            //printf("Sock : %d buf : /%s/",*s_dial,buf);
-        }
-        bzero(buf,80);
-        dresseur = dresseur->next;
-        
-    }
-    send(*s_dial,"000end",strlen("000end"),0);
-}
-
 void combat_init(MYSQL* ipmon_bdd,char* msg,int *s_dial){
     // Ipmon* ipmon_adv  = chercher_ipmon(ipmon_bdd,strtol(msg,NULL,10));
     // Ipmon* mon_ipmon;
     // Dresseur* dresseur = chercher_dresseur(dresseur_list_jeu,*s_dial);
-    // char buf[80];
+    // char buf[BUFFER_SIZE];
 
     // /* INITIALISATION des pokemons */
     // printf("combat");
     // send(*s_dial,"msg:1",strlen("msg:1"),0);
-    // recv(*s_dial,buf,80,0);
-    // bzero(buf,80);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
+    // bzero(buf,BUFFER_SIZE);
     // send(*s_dial,"msg:2",strlen("msg:2"),0);
-    // recv(*s_dial,buf,80,0);
-    // bzero(buf,80);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
+    // bzero(buf,BUFFER_SIZE);
     // sprintf(buf,"%d:%s:%s:%s:%d",ipmon_adv->id,ipmon_adv->nom,ipmon_adv->etat,ipmon_adv->type,ipmon_adv->typeEntier);
-    // send(*s_dial,buf,80,0);
-    // recv(*s_dial,buf,80,0);
-    // bzero(buf,80);
+    // send(*s_dial,buf,BUFFER_SIZE,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
+    // bzero(buf,BUFFER_SIZE);
     // sprintf(buf,"%d:%d:%d:%d:%s",ipmon_adv->pv,ipmon_adv->agilite,ipmon_adv->niveau,ipmon_adv->puissance_attaque,ipmon_adv->nom_attaque);
-    // send(*s_dial,buf,80,0);
-    // recv(*s_dial,buf,80,0);
-    // bzero(buf,80);
+    // send(*s_dial,buf,BUFFER_SIZE,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
+    // bzero(buf,BUFFER_SIZE);
     // sprintf(buf,"%d:%d:%d:%d",ipmon_adv->precision_attaque,ipmon_adv->puissance_attaque,ipmon_adv->esquive,ipmon_adv->precision);
-    // send(*s_dial,buf,80,0);
-    // recv(*s_dial,buf,80,0);
-    // bzero(buf,80);
+    // send(*s_dial,buf,BUFFER_SIZE,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
+    // bzero(buf,BUFFER_SIZE);
     // sprintf(buf,"%d:%d:%s:%d",ipmon_adv->puissance_attaque_special,ipmon_adv->precision_attaque_special,ipmon_adv->nom_attaque_special,ipmon_adv->puissance_defense_special);
-    // send(*s_dial,buf,80,0);
-    // recv(*s_dial,buf,80,0);
+    // send(*s_dial,buf,BUFFER_SIZE,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
     // mon_ipmon = chercher_ipmon(ipmon_bdd,strtol(buf,NULL,10));
-    // bzero(buf,80);
+    // bzero(buf,BUFFER_SIZE);
     // send(*s_dial,"end",strlen("end"),0);
 
     // if (mon_ipmon->agilite > ipmon_adv->agilite)
@@ -137,7 +51,8 @@ Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
     LOG_DBG("requete = %s",requete);
 
     if(mysql_query(ipmon_bdd, requete)){
-                finish_with_error(ipmon_bdd);
+                //finish_with_error(ipmon_bdd);
+                requete[150] = 0;
     } 
     result = mysql_store_result(ipmon_bdd);
     row = mysql_fetch_row(result);
@@ -168,7 +83,7 @@ Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
 }
             
 int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
-    // char buf[80];
+    // char buf[BUFFER_SIZE];
     // int choix;
     // int gagnant;
     // int id, i;
@@ -176,18 +91,18 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // int tour = 1;
     // while ((ipmonDresseur.pv > 0) && (ipmon.pv > 0)) { //Tant que l'un des ipmons ne meurt pas
     // sprintf(buf,"Tour %d\n", tour);
-    // send(*s_dial,buf,80,0);
-    // recv(*s_dial,buf,80,0);
+    // send(*s_dial,buf,BUFFER_SIZE,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
     // if (ipmonDresseur.agilite > ipmon.agilite) { //L'ipmon du dresseur est plus rapide que l'ipmon sauvage, donc c'est lui qui attaque en 1er
     
-    // recv(*s_dial,buf,80,0);
+    // recv(*s_dial,buf,BUFFER_SIZE,0);
     // choix = strtol(buf,NULL,10);
     // if (choix == 1) {
     //     int x = ipmon.pv, y = ipmonDresseur.pv;
     //     ipmon.pv = attaque (&ipmonDresseur, &ipmon);
     //     sprintf(buf,"Vous avez fait l'attaque : %s\n", ipmonDresseur.nom_attaque);
-    //     send(*s_dial,buf,80,0);
-    //     recv(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
+    //     recv(*s_dial,buf,BUFFER_SIZE,0);
     //     if (x == ipmon.pv)
     //         send(*s_dial,"Attaque ratée !\n",strlen("Attaque ratée !\n"),0);
     //     else {
@@ -196,16 +111,16 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     //             break;
     //         }
     //         sprintf(buf,"Il lui reste maintenant %d pv\n", ipmon.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     //     int a = rand () % 2;
     //     if (a == 0) {
     //         sprintf(buf,"L'ipmon sauvage a fait l'attaque : %s\n", ipmon.nom_attaque);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         ipmonDresseur.pv = attaque (&ipmon, &ipmonDresseur);
     //         if (y == ipmonDresseur.pv){
     //             sprintf(buf,"L'attaque de l'ipmon sauvage est ratée !\n");
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }
     //         else {
     //             if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
@@ -213,23 +128,23 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     //                 break;
     //             }
     //             sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }
     //     }
     //     else {
     //         sprintf(buf,"L'ipmon sauvage a fait l'attaque spéciale : %s\n", ipmon.nom_attaque_special);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         ipmonDresseur.pv = attaque_speciale (&ipmon, &ipmonDresseur);
     //         if (y == ipmonDresseur.pv){
     //             sprintf(buf,"L'attaque spéciale de l'ipmon sauvage est ratée !\n");
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }else {
     //             if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
     //                 gagnant = 2;
     //                 break;
     //             }
     //             sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }
     //     }
     // }
@@ -237,59 +152,59 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     //     int x = ipmon.pv, y = ipmonDresseur.pv;
     //     ipmon.pv = attaque_speciale (&ipmonDresseur, &ipmon);
     //     sprintf(buf,"Vous avez fait l'attaque spéciale : %s\n", ipmonDresseur.nom_attaque_special);
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     if (x == ipmon.pv){
     //         sprintf(buf,"Attaque ratée !\n");
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }else {
     //         if (ipmon.pv == -1) { //Si l'ipmon sauvage n'a plus de vie
     //             gagnant = 1;
     //             break;
     //         }
     //         sprintf(buf,"Il lui reste maintenant %d pv\n", ipmon.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     //     int a = rand () % 2;
     //     if (a == 0) {
     //         sprintf(buf,"L'ipmon sauvage a fait l'attaque spéciale : %s\n", ipmon.nom_attaque_special);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         ipmonDresseur.pv = attaque_speciale (&ipmon, &ipmonDresseur);
     //         if (y == ipmonDresseur.pv){
     //             sprintf(buf,"L'attaque spéciale de l'ipmon sauvage est ratée !\n");
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }else {
     //             if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
     //                 gagnant = 2;
     //                 break;
     //             }
     //             sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }
     //     }
     //     else {
     //         sprintf(buf,"L'ipmon sauvage a fait l'attaque : %s\n", ipmon.nom_attaque);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         ipmonDresseur.pv = attaque (&ipmon, &ipmonDresseur);
     //         if (y == ipmonDresseur.pv){
     //             sprintf(buf,"L'attaque de l'ipmon sauvage est ratée !\n");
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }else {
     //             if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
     //                 gagnant = 2;
     //                 break;
     //             }
     //             sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //             send(*s_dial,buf,80,0);
+    //             send(*s_dial,buf,BUFFER_SIZE,0);
     //         }
     //     }
     // }
     // else if (choix == 0) {
     //     send(*s_dial,"4",strlen("4"),0);
-    //     recv(*s_dial,buf,80,0);
+    //     recv(*s_dial,buf,BUFFER_SIZE,0);
     //     char c = buf[0];
     //     if (c == 'y') {
     //         sprintf(buf,"Vous avez abandonné le combat, vous avez donc perdu\n");
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         gagnant = 3;
     //         break;
     //     }
@@ -297,7 +212,7 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // }
     // else {
     //     sprintf(buf,"Entrez un nombre valide !");
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     // }
     // }
     // else {
@@ -305,34 +220,34 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // int x = ipmon.pv, y = ipmonDresseur.pv;
     // if (attaque_ipmon_sauvage == 0) {
     //     sprintf(buf,"L'ipmon sauvage a fait l'attaque : %s\n", ipmon.nom_attaque);
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     ipmonDresseur.pv = attaque (&ipmon, &ipmonDresseur);
     //     if (y == ipmonDresseur.pv){
     //         sprintf(buf,"L'attaque de l'ipmon sauvage est ratée !\n");
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }else {
     //         if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
     //             gagnant = 2;
     //             break;
     //         }
     //         sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     // }
     // else {
     //     sprintf(buf,"L'ipmon sauvage a fait l'attaque spéciale : %s\n", ipmon.nom_attaque);
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     ipmonDresseur.pv = attaque_speciale (&ipmon, &ipmonDresseur);
     //     if (y == ipmonDresseur.pv){
     //         sprintf(buf,"L'attaque spéciale de l'ipmon sauvage est ratée !\n");
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }else {
     //         if (ipmonDresseur.pv == -1) { //Si le dresseur n'a plus de vie
     //             gagnant = 2;
     //             break;
     //         }
     //         sprintf(buf,"Il vous reste maintenant %d pv\n", ipmonDresseur.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     // }
 
@@ -340,7 +255,7 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // if (choix == 1) {
     //     ipmon.pv = attaque (&ipmonDresseur, &ipmon);
     //     sprintf(buf,"Vous avez fait l'attaque : %s\n", ipmonDresseur.nom_attaque);
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     if (x == ipmon.pv)
     //         sprintf(buf,"Attaque ratée !\n");
     //     else {
@@ -349,32 +264,32 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     //             break;
     //         }
     //         sprintf(buf,"Il lui reste maintenant %d pv\n", ipmon.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     // }
     // else if (choix == 2) {
     //     ipmon.pv = attaque_speciale (&ipmonDresseur, &ipmon);
     //     sprintf(buf,"Vous avez fait l'attaque spéciale : %s\n", ipmonDresseur.nom_attaque);
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     if (x == ipmon.pv){
     //         sprintf(buf,"Attaque ratée !\n");
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     //     }else {
     //         if (ipmon.pv == -1) { //Si l'ipmon sauvage n'a plus de vie
     //             gagnant = 1;
     //             break;
     //         }
     //         sprintf(buf,"Il lui reste maintenant %d pv\n", ipmon.pv);
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //     }
     // }
     // else if (choix == 0) {
     //     send(*s_dial,"4",strlen("4"),0);
-    //     recv(*s_dial,buf,80,0);
+    //     recv(*s_dial,buf,BUFFER_SIZE,0);
     //     char c = buf[0];
     //     if (c == 'y') {
     //         sprintf(buf,"Vous avez abandonné le combat, vous avez donc perdu\n");
-    //         send(*s_dial,buf,80,0);
+    //         send(*s_dial,buf,BUFFER_SIZE,0);
     //         gagnant = 3;
     //         break;
     //     }
@@ -382,7 +297,7 @@ int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // }
     // else {
     //     sprintf (buf,"Entrez un nombre valide !");
-    //     send(*s_dial,buf,80,0);
+    //     send(*s_dial,buf,BUFFER_SIZE,0);
     // }
     // }
     // tour++;
