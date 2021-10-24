@@ -407,7 +407,7 @@ void *threadUpdatePositionAndListOfPlayer(void *data)
   
     len = sizeof(cliaddr);  //len is value/resuslt
   
-    while (cltCtx->stopThread == FALSE)
+    while (cltCtx->stopThread == false)
     {
         usleep(50000); // 50ms
 

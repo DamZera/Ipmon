@@ -229,7 +229,7 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
     cltCtx.srvaddr = srvaddr;
     cltCtx.xyPlayer = persoAvant;
     cltCtx.player = dresseur;
-    cltCtx.stopThread = FALSE;
+    cltCtx.stopThread = false;
     cltCtx.listOfPlayer = NULL;
 
     pthread_attr_t *thread_attributes;
@@ -273,7 +273,7 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
         LOG_DBG("END LOOP !");
     }
 
-    cltCtx.stopThread = TRUE;
+    cltCtx.stopThread = true;
     sleep(1);
     LibererMap(carte);
     SDL_Quit();

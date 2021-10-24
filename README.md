@@ -2,10 +2,11 @@
 
 ## TODO
 
-* Implement threads in client to manage new position and update of the list of players
+* Delete green background
+* Add pseudo on main character
+* Refactor code (clean, delete franglish)
 
 ## Depedencies
 
 * SDL v1.2
 * libmysqlclient-dev
-* gtk v2.0

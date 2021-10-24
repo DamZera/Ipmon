@@ -10,26 +10,20 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 #include <malloc.h>
-#include <gtk/gtk.h>
 
 #include "protocol.h"
 #include "logger.h"
 
 typedef struct Login{
-    GtkWidget *champ_login;
-    GtkWidget *champ_pass;
-    GtkWidget *fenetre;
     struct sockaddr_in* srvaddr;
+    char pseudo[50];
+    char pass[50]; 
     int socket;
     int connect;
 }Login;
-
-typedef struct Message{
-    char code [4];
-    char data [100];
-}Message;
 
 typedef struct Ipmon{
     int id;
@@ -68,14 +62,13 @@ typedef struct Dresseur{
     int nombreIpmons;
 }Dresseur;
 
-gboolean cb_quit (GtkWidget *p_widget, gpointer user_data);
-gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data);
-void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data);
+// Command line functions
+void printManual(char* cmd);
+int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd);
 
-
-int menu_gtk();
+// IPMON connection and register of player
 int connectToIpmonServer(int port);
-void insert_dresseur(int *s_cli);
-int connection_dresseur(int *s_cli);
+void registerPlayer(Login* login);
+int connectPlayerToIPMON(Login* login);
 
 #endif 
