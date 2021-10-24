@@ -5,11 +5,17 @@
 #include <stdarg.h>
 #include <time.h>
 
+#define LOG_LEVEL 1
+
 #define NO_OP_FUNC \
     do {} while(0)
 
+#if LOG_LEVEL <= 0
 #define LOG_DBG(...) \
     _log(stdout, "D", __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+#else
+    #define LOG_DBG(...) NO_OP_FUNC
+#endif
 
 #define LOG_INFO(...) \
     _log(stdout, "I", __FILE__, __LINE__,  __FUNCTION__, __VA_ARGS__)

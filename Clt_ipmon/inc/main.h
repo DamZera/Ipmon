@@ -10,26 +10,20 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 #include <malloc.h>
-#include <gtk/gtk.h>
 
 #include "protocol.h"
 #include "logger.h"
 
 typedef struct Login{
-    GtkWidget *champ_login;
-    GtkWidget *champ_pass;
-    GtkWidget *fenetre;
     struct sockaddr_in* srvaddr;
+    char pseudo[50];
+    char pass[50]; 
     int socket;
     int connect;
 }Login;
-
-typedef struct Message{
-    char code [4];
-    char data [100];
-}Message;
 
 typedef struct Ipmon{
     int id;
@@ -68,14 +62,55 @@ typedef struct Dresseur{
     int nombreIpmons;
 }Dresseur;
 
-gboolean cb_quit (GtkWidget *p_widget, gpointer user_data);
-gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data);
-void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data);
+/******************************
+ *  Command line functions
+ *****************************/
 
+/**
+ * @brief Print command manual
+ * 
+ * @param char* cmd : command name
+ **/ 
+void printManual(char* cmd);
 
-int menu_gtk();
-int connectToIpmonServer(int port);
-void insert_dresseur(int *s_cli);
-int connection_dresseur(int *s_cli);
+/**
+ * @brief Process command enter by the user
+ * 
+ * @param int socket : socket open with server
+ * @param struct sockaddr_in* srvaddr : socket address to communicate with the server
+ * @param char* cmd : command to process
+ * 
+ * @return int : connection with the server is ok or not
+ *             1 -> OK
+ *             0 -> KO
+ **/ 
+int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd);
+
+/*********************************************
+ *  IPMON connection and register of player
+ ********************************************/
+
+/**
+ * @brief Create socket to send / receive message
+ * 
+ * @param int port : port choose for the client
+ * 
+ * @return int socket : -1 when the creation of the socket fail
+ **/
+int createSocket(int port);
+
+/**
+ * @brief Register player with the data from login struct
+ * 
+ * @param Login* login : pointer to the login structure
+ **/
+void registerPlayer(Login* login);
+
+/**
+ * @brief Connect player with the data from login struct
+ * 
+ * @param Login* login : pointer to the login structure
+ **/
+int connectPlayerToIPMON(Login* login);
 
 #endif 

@@ -7,16 +7,27 @@
 
 Dresseur *dresseur;
 
-gboolean cb_quit (GtkWidget *p_widget, gpointer user_data)
+void printManual(char* cmd)
 {
-    gtk_main_quit();
-    return FALSE;
+    printf("%s <ip_server> <port_server> <port_client> <cmd>\n\n", cmd);
+    printf("Client must be launch in the root folder\n");
+    printf("Parameters:\n");
+    printf("\tip_server : IP of the IPMON server\n");
+    printf("\tport_server : port of the server\n");
+    printf("\tport_client : port IN of the client\n");
+    printf("\tcmd : support connection and register\n");
+    printf("\t\t c:<pseudo>:<pass> : connection with pseudo and pass\n");
+    printf("\t\t r:<pseudo>:<pass> : register to IPMON with pseudo and pass\n");
 }
 
-int connectToIpmonServer(int port)
+int createSocket(int port)
 {
+    LOG_DBG("Start createSocket");
     int s_cli;
     int err;
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 100000;
 
     struct sockaddr_in serv_addr;
 
@@ -26,6 +37,11 @@ int connectToIpmonServer(int port)
     memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
 
     s_cli = socket (AF_INET, SOCK_DGRAM, 0);
+    // Timeout on receive
+    if (setsockopt(s_cli, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
+        perror("Error");
+    }
+
     err = bind(s_cli, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     if(err == -1)
     {
@@ -36,30 +52,21 @@ int connectToIpmonServer(int port)
     return s_cli;
 }
 
-void bouton_enregistrer_clicked(GtkWidget *widget, gpointer data){
-    Login *login = data;
-    char pseudo[50];
-    char pass[50];    
-    char buf [200];
-    bzero(buf, 200);
+void registerPlayer(Login* login)
+{
+    char buf [BUFFER_SIZE];
+    bzero(buf, BUFFER_SIZE);
 
-    strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
-    strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
-
-    snprintf(buf, 200, "%d:%s:%s", REGISTER_TO_IPMON, pseudo, pass);
+    snprintf(buf, 200, "%d:%s:%s", REGISTER_TO_IPMON, login->pseudo, login->pass);
     sendto(login->socket, buf, strlen(buf), MSG_CONFIRM,
         (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 }
 
-gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
-    Login *login = (Login *)data;
-    char buffer [200];
+int connectPlayerToIPMON(Login* login)
+{
+    char buffer [BUFFER_SIZE];
     char *token, *string, *pstring;
-    char pseudo[50];
-    char pass[50];    
-        
     int n ;
-
 
     struct sockaddr_in rcvaddr;
     memset(&rcvaddr, 0, sizeof(rcvaddr));
@@ -67,12 +74,8 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     int len;
     len = sizeof(rcvaddr);  //len is value/resuslt
     
-    // TODO strncpy more secure
-    strcpy(pseudo,gtk_entry_get_text(GTK_ENTRY(login->champ_login)));
-    strcpy(pass,gtk_entry_get_text(GTK_ENTRY(login->champ_pass)));
-    
     bzero(buffer, 200);
-    snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, pseudo, pass);
+    snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, login->pseudo, login->pass);
     sendto(login->socket, buffer, strlen(buffer), MSG_CONFIRM,
         (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 
@@ -100,7 +103,7 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
                 snprintf(dresseur->map, strlen(token)+1, "%s", token);
             }
             
-            sprintf(dresseur->pseudo, "%s", pseudo);
+            sprintf(dresseur->pseudo, "%s", login->pseudo);
             login->connect = 1;
 
             LOG_INFO("LOGIN ok");
@@ -108,7 +111,6 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
         // Connection KO
         else if (code == REFUSE_CONNECTION)
         {
-            gtk_entry_set_text(GTK_ENTRY(login->champ_login),"Login error");
             LOG_INFO("LOGIN error");
         }
     }
@@ -116,84 +118,51 @@ gboolean bouton_connect_clicked(GtkWidget *widget, gpointer data){
     free(pstring);
 
     if(login->connect == 1){
-        //gtk_widget_destroy(login->fenetre);
-        LOG_INFO("CB destroy");
-        gtk_main_quit ();
-        return FALSE;
+        return 0;
     }
 
-    return TRUE;
+    return 1;
 }
 
-int menu_gtk(int socket, struct sockaddr_in* srvaddr){
-    Login *login = (Login*)malloc(sizeof(Login));
-    GtkWidget* fenetre;  
-    GtkWidget *bouton_connect = NULL, *bouton_enregistrer = NULL, *bouton_quitter = NULL;
-    GtkWidget *champ_login   = NULL, *champ_pass   = NULL;
-    GtkWidget *layout = NULL;
-    GtkWidget *background;
-    int x_bouton;
-        
-    fenetre=gtk_window_new(GTK_WINDOW_TOPLEVEL);  
-         
-    gtk_window_set_title(GTK_WINDOW(fenetre), "Connection ipmon");  
-    gtk_window_set_position(GTK_WINDOW(fenetre), GTK_WIN_POS_CENTER);  
-    gtk_window_set_default_size(GTK_WINDOW(fenetre), LARGEUR_FENETRE, HAUTEUR_FENETRE);  
+int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd) 
+{
+    LOG_DBG("Start processCommand");
+    char* string, *token, *cmdTmp;
+    Login login;
+
+    login.socket = socket;
+    login.connect = 0;
+    login.srvaddr = srvaddr;
+
+    string = strdup(cmd);
     
-    background = gtk_image_new_from_file("./images/ipmon.png");
-    layout = gtk_layout_new(NULL, NULL);
-      gtk_container_add (GTK_CONTAINER (fenetre), layout);
-     
-     /*On initialise les boutons*/
-    bouton_connect = gtk_button_new_with_label ("Connexion");
-    bouton_enregistrer = gtk_button_new_with_label ("S'enregistrer");
-    bouton_quitter = gtk_button_new_from_stock (GTK_STOCK_QUIT);
-    champ_login  = gtk_entry_new();
-    champ_pass  = gtk_entry_new();
-    
-    /* Options de la Zone de saisie champ_login*/
-    gtk_entry_set_max_length(GTK_ENTRY(champ_login), 50);          /* Nombre max de caractères */
-    gtk_entry_set_text (GTK_ENTRY(champ_login), "dressA" ); /* Texte par défaut */
-    gtk_entry_set_visibility(GTK_ENTRY(champ_login), TRUE);             /* Visibilité des caracteres */
-    //gtk_entry_set_editable(GTK_ENTRY(champ_login), TRUE);               /* Ecriture dans la zone possbile */
-    
-    /* Options de la Zone de saisie champ_pass*/
-    gtk_entry_set_max_length(GTK_ENTRY(champ_pass), 50);         
-    gtk_entry_set_text (GTK_ENTRY(champ_pass), "1234" ); 
-    gtk_entry_set_visibility(GTK_ENTRY(champ_pass), FALSE);            
-    //gtk_entry_set_editable(GTK_ENTRY(champ_pass), TRUE);             
-    
-    /*on ajoute les boutons au container*/
-    
-    x_bouton = LARGEUR_FENETRE/2 - 300/2;
-    gtk_layout_put(GTK_LAYOUT(layout), background, 0, 0);
-    gtk_layout_put(GTK_LAYOUT(layout), champ_login, x_bouton, 250);
-    gtk_layout_put(GTK_LAYOUT(layout), champ_pass, x_bouton+150, 250);
-    gtk_layout_put(GTK_LAYOUT(layout), bouton_connect, x_bouton, 300);
-    gtk_layout_put(GTK_LAYOUT(layout), bouton_enregistrer, x_bouton, 350);
-    gtk_layout_put(GTK_LAYOUT(layout), bouton_quitter, x_bouton, 400);
-    
-    /*On redimentionne les boutons*/
-    gtk_widget_set_size_request(champ_login, 150, 35);
-    gtk_widget_set_size_request(champ_pass, 150, 35);
-    gtk_widget_set_size_request(bouton_connect, 300, 35);
-    gtk_widget_set_size_request(bouton_enregistrer, 300, 35);
-    gtk_widget_set_size_request(bouton_quitter, 300, 35);
-        
-    login->champ_login = champ_login;
-    login->champ_pass = champ_pass;
-    login->fenetre = fenetre;
-    login->socket = socket;
-    login->srvaddr = srvaddr;
-    login->connect = 0;
-      
-    gtk_widget_show_all(fenetre);  
-    g_signal_connect(bouton_enregistrer, "clicked", G_CALLBACK(bouton_enregistrer_clicked), login);
-    g_signal_connect(bouton_connect, "clicked", G_CALLBACK(bouton_connect_clicked), login);
-    g_signal_connect (bouton_quitter, "clicked", G_CALLBACK (cb_quit), NULL); 
-    
-    gtk_main();
-    return login->connect;
+    // Parse command
+    if ((cmdTmp = strsep(&string, ":")) != NULL)
+    {
+        if ((token = strsep(&string, ":")) != NULL)
+        {
+            strncpy(login.pseudo, token, 50);
+        }
+
+        if ((token = strsep(&string, ":")) != NULL)
+        {
+            strncpy(login.pass, token, 50);
+        }
+
+        if (strcmp(cmdTmp, "c") == 0)
+        {
+            connectPlayerToIPMON(&login);
+        } 
+        else if (strcmp(cmdTmp, "r") == 0)
+        {
+            registerPlayer(&login);
+        }
+        else
+        {
+            LOG_WARN("Cmd unknown %s", cmd);
+        }
+    }
+    return login.connect;
 }
       
 int main(int argc, char *argv[])
@@ -205,34 +174,38 @@ int main(int argc, char *argv[])
 
     struct sockaddr_in serv_addr;
 
-    if(argc == 4 && argv[1] != NULL && argv[2]!= NULL){
+    if(argc == 5 
+        && argv[1] != NULL 
+        && argv[2] != NULL
+        && argv[3] != NULL
+        && argv[4] != NULL)
+    {
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = inet_addr (argv[1]);
         serv_addr.sin_port = htons (strtol(argv[2],NULL,10));
         memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
 
-        s_cli = connectToIpmonServer(strtol(argv[3],NULL,10));
+        int portClient = strtol(argv[3],NULL,10);
+
+        s_cli = createSocket(portClient);
         if(s_cli == -1)
         {
-            LOG_ERR("Connection between client and server failed ! IP<%s> portServer<%s> port<%s>",
+            LOG_ERR("Connection between client and server failed ! IP<%s> portServer<%s> portClient<%s>",
                 argv[1], argv[2], argv[3]);
             return 1;
         }
     }
     else
     {
-        LOG_ERR("Usage: clt_ipmon address port");
+        printManual(argv[0]);
         return 0;
     }
-    
-    gtk_init(NULL, NULL);
-    
-    connect = menu_gtk(s_cli, &serv_addr);
 
-    SDL_Init(SDL_INIT_VIDEO);
+    connect = processCommand(s_cli, &serv_addr, argv[4]);
     
-    if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
-        jeu(s_cli, &serv_addr, dresseur);
+    if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL)
+    {
+        mainLoop(s_cli, &serv_addr, dresseur);
     }
 
     snprintf(buf, BUFFER_SIZE, "%d", CLOSE_CLIENT);

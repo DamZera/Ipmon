@@ -19,9 +19,9 @@ Dresseur* chercher_dresseur(Dresseur *dresseur_list,int socket){
             return dresseur;
         else
             dresseur = dresseur->next;
-    }
+    }*/
 
-    return NULL;*/
+    return NULL;
 }
 
 Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* pseudo, int coodX, int coodY, char* map, int id){
@@ -400,15 +400,15 @@ void *threadDownload(void *data)
     struct sockaddr_in cliaddr;
     memset(&cliaddr, 0, sizeof(cliaddr));
 
-    int len, n;
+    unsigned int len, n;
     char buffer[1024];
     char ip[24];
     int err = ERR_NOERROR;
   
     len = sizeof(cliaddr);  //len is value/resuslt
   
-    while (n = recvfrom(servCtx->socketServer, (char *)buffer, 1024, 
-                MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len))
+    while ((n = recvfrom(servCtx->socketServer, (char *)buffer, 1024, 
+                MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len)) > 0)
     {
         buffer[n] = '\0';
         inet_ntop(AF_INET, &(((struct sockaddr_in*)&cliaddr)->sin_addr),
@@ -427,6 +427,8 @@ void *threadDownload(void *data)
         memset(&buffer, 0, sizeof(buffer));
         memset(&ip, 0, strlen(ip));
     }
+
+    pthread_exit(NULL);
 }
 
 

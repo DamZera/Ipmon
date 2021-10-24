@@ -17,4 +17,6 @@
 #define HAUTEUR_FENETRE 600
 #define MOVE_SPEED_PLAYER 5
 
+void mainLoop(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur);
+
 #endif
