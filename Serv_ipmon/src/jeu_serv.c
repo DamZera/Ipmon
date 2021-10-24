@@ -52,7 +52,6 @@ Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
 
     if(mysql_query(ipmon_bdd, requete)){
                 //finish_with_error(ipmon_bdd);
-                requete[150] = 0;
     } 
     result = mysql_store_result(ipmon_bdd);
     row = mysql_fetch_row(result);
