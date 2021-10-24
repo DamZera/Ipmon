@@ -75,10 +75,10 @@ Dresseur* connectToIPMONSQL(MYSQL* ipmon_bdd, char* pseudo, char* pass)
 
         dresseur->coodX = strtol(row[4],NULL,10);
         dresseur->coodY = strtol(row[5],NULL,10);
-        dresseur->pseudo = (char*)malloc(sizeof(char)*strlen(pseudo)+1);
-        dresseur->map = (char*)malloc(sizeof(char)*strlen(row[6])+1);
-        memset(dresseur->pseudo, 0, sizeof(dresseur->pseudo));
-        memset(dresseur->map, 0, sizeof(dresseur->map));
+        dresseur->pseudo = (char*)malloc(sizeof(char)*(strlen(pseudo)+1));
+        dresseur->map = (char*)malloc(sizeof(char)*(strlen(row[6])+1));
+        memset(dresseur->pseudo, 0, sizeof(char)*(strlen(pseudo)+1));
+        memset(dresseur->map, 0, sizeof(char)*(strlen(row[6])+1));
 
         strcpy(dresseur->pseudo, pseudo);
         strcpy(dresseur->map, row[6]);

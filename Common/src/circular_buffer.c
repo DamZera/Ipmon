@@ -93,9 +93,8 @@ int circularBufPut(CircularBuf* q, char* item, struct sockaddr_in* cliaddr){
         }	else if (circularBufFull(q) == CIRCULAR_BUFF_FULL){
             return CIRCULAR_BUFF_FULL;
         } else {
-            q->tail->data = (char*)malloc(sizeof(char)*strlen(item));
+            q->tail->data = (char*)malloc(sizeof(char)*(strlen(item)+1));
             memcpy(q->tail->data, item, strlen(item)+1);
-            //memcpy(q->tail->cliaddr, cliaddr, sizeof(cliaddr));
 
             q->head->cliaddr.sin_family = AF_INET;
             q->head->cliaddr.sin_port = cliaddr->sin_port;
@@ -128,7 +127,7 @@ int circularBufRead(CircularBuf *q, char** item, struct sockaddr_in* cliaddr){
         }
         else
         {
-            *item = (char*)malloc(sizeof(char)*strlen(q->head->data));
+            *item = (char*)malloc(sizeof(char)*(strlen(q->head->data)+1));
             memcpy((char*)(*item), q->head->data, strlen(q->head->data)+1);
             free(q->head->data);
 
