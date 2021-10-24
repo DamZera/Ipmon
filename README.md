@@ -2,9 +2,10 @@
 
 ## TODO
 
-* Delete green background
-* Add pseudo on main character
-* Refactor code (clean, delete franglish)
+* Add pseudo for other players
+* Add correct sprite (down, right..) for other players
+* Begin implement ipmon ?
+* Refactor code
 
 ## Depedencies
 
