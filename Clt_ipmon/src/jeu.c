@@ -125,8 +125,8 @@ int jeuCombat(int sock)
     combat = rand()%300;
     
     if(combat<3){
-        idpokemonAdv = rand()%50+1;
-        printf("Combat contre pokemon id = %d\n",idpokemonAdv);
+        //idpokemonAdv = rand()%50+1;
+        //printf("Combat contre pokemon id = %d\n",idpokemonAdv);
         /*send(sock,buf,strlen(buf),0);
         bzero(buf,BUFFER_SIZE);
         printf("Socket = %d\n",sock );
@@ -409,20 +409,29 @@ void *threadUpdatePositionAndListOfPlayer(void *data)
   
     while (cltCtx->stopThread == false)
     {
-        usleep(50000); // 50ms
+        usleep(100000); // 100ms
 
         pthread_mutex_lock(&mutexNewPosition);
         sprintf(buf, "%d:%d:%d:%s", NEW_COORDINATES,
             cltCtx->xyPlayer->x, cltCtx->xyPlayer->y, cltCtx->player->map);
         pthread_mutex_unlock(&mutexNewPosition);
 
+        LOG_DBG("send : %s", buf);
         sendto(cltCtx->socket, buf, strlen(buf), MSG_CONFIRM,
             (const struct sockaddr *) cltCtx->srvaddr, sizeof(*(cltCtx->srvaddr)));
-
+        
         n = recvfrom(cltCtx->socket, (char *)bufBig, BIG_BUFFER_SIZE, 
                 MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
-        bufBig[n] = '\0';
-        setListOfPlayers(NULL, bufBig, cltCtx);
+        if (n >= 0)
+        {
+            bufBig[n] = '\0';
+            LOG_DBG("receive : %s", bufBig);
+            setListOfPlayers(NULL, bufBig, cltCtx);
+        }
+        else
+        {
+            LOG_WARN("Timeout without any message receive");
+        }
 
         memset(buf, 0, sizeof(buf));
         memset(bufBig, 0, sizeof(bufBig));

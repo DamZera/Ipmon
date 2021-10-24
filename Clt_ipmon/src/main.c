@@ -25,6 +25,9 @@ int connectToIpmonServer(int port)
     LOG_DBG("Start connectToIpmonServer");
     int s_cli;
     int err;
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 100000;
 
     struct sockaddr_in serv_addr;
 
@@ -34,6 +37,11 @@ int connectToIpmonServer(int port)
     memset (&serv_addr.sin_zero, 0, sizeof(serv_addr.sin_zero));
 
     s_cli = socket (AF_INET, SOCK_DGRAM, 0);
+    // Timeout on receive
+    if (setsockopt(s_cli, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
+        perror("Error");
+    }
+
     err = bind(s_cli, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     if(err == -1)
     {
@@ -194,8 +202,6 @@ int main(int argc, char *argv[])
     }
 
     connect = processCommand(s_cli, &serv_addr, argv[4]);
-
-    SDL_Init(SDL_INIT_VIDEO);
     
     if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
         jeu(s_cli, &serv_addr, dresseur);
