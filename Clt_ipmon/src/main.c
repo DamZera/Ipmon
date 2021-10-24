@@ -20,9 +20,9 @@ void printManual(char* cmd)
     printf("\t\t r:<pseudo>:<pass> : register to IPMON with pseudo and pass\n");
 }
 
-int connectToIpmonServer(int port)
+int createSocket(int port)
 {
-    LOG_DBG("Start connectToIpmonServer");
+    LOG_DBG("Start createSocket");
     int s_cli;
     int err;
     struct timeval tv;
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 
         int portClient = strtol(argv[3],NULL,10);
 
-        s_cli = connectToIpmonServer(portClient);
+        s_cli = createSocket(portClient);
         if(s_cli == -1)
         {
             LOG_ERR("Connection between client and server failed ! IP<%s> portServer<%s> portClient<%s>",
@@ -203,8 +203,9 @@ int main(int argc, char *argv[])
 
     connect = processCommand(s_cli, &serv_addr, argv[4]);
     
-    if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL){
-        jeu(s_cli, &serv_addr, dresseur);
+    if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL)
+    {
+        mainLoop(s_cli, &serv_addr, dresseur);
     }
 
     snprintf(buf, BUFFER_SIZE, "%d", CLOSE_CLIENT);

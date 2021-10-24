@@ -1,32 +1,37 @@
 #include "GUI_ipmon.h"
 #include "jeu.h"
 
-// Utilisation de 3 fonctions qui permettent le déplacement
 Dresseur *joueur;
 SDL_Texture *dresseurHaut = NULL, *dresseurBas = NULL,
     *dresseurGauche = NULL, *dresseurDroite = NULL, *dresseurActuel = NULL;
 
 void DeplacerVecteur(const Uint8* in, int* vx, int* vy, SDL_Rect* perso,
-    SDL_Renderer* pRenderer, int xscroll, int yscroll, SDL_Surface* texte, ClientContext* cltCtx)
+                    SDL_Renderer* pRenderer, int xscroll, int yscroll,
+                    SDL_Texture* texte, ClientContext* cltCtx)
 {    
     LOG_DBG("DeplacerVecteur :: START");
 
     SDL_Rect positionsurecran = *perso, positiontexte = *perso;
     SDL_Rect postionpersoB, texteB;
+
     SDL_Rect imgSize;
     imgSize.x = 0;
     imgSize.y = 0;
-    imgSize.w = 20;
-    imgSize.h = 30;
+
+    SDL_Rect texteSize;
+    texteSize.x = 0;
+    texteSize.y = 0;
+
+    SDL_QueryTexture(dresseurHaut, NULL, NULL, &imgSize.w, &imgSize.h);
+    SDL_QueryTexture(texte, NULL, NULL, &texteSize.w, &texteSize.h);
+
     positionsurecran.x -= xscroll;
     positionsurecran.y -= yscroll;
-    //positiontexte.x = positionsurecran.x - (texte->w /2) + (perso->w/2);
-    //positiontexte.y = positionsurecran.y -10;
-    int vitesse = MOVE_SPEED_PLAYER;
+    positiontexte.x = positionsurecran.x - (texteSize.w/2) + (imgSize.w/2);
+    positiontexte.y = positionsurecran.y -10;
+    positiontexte.w = texteSize.w;
+    positiontexte.h = texteSize.h;
     *vx = *vy = 0;
-
-
-    //SDL_EnableKeyRepeat(100, 100);
 
     jeuLockListOfPlayers();
     Dresseur_aff* ptrListPlayers = cltCtx->listOfPlayer;
@@ -46,27 +51,24 @@ void DeplacerVecteur(const Uint8* in, int* vx, int* vy, SDL_Rect* perso,
     jeuUnlockListOfPlayers();
 
     if (in[SDL_SCANCODE_UP]){
-        *vy = -vitesse;
+        *vy = -MOVE_SPEED_PLAYER;
         dresseurActuel=dresseurHaut;
     }
     else if (in[SDL_SCANCODE_DOWN]){
-        *vy = vitesse;
+        *vy = MOVE_SPEED_PLAYER;
         dresseurActuel=dresseurBas;
     }
     else if (in[SDL_SCANCODE_LEFT]){
-        *vx = -vitesse;
+        *vx = -MOVE_SPEED_PLAYER;
         dresseurActuel=dresseurGauche;
     }
     else if (in[SDL_SCANCODE_RIGHT]){
-        *vx = vitesse;
+        *vx = MOVE_SPEED_PLAYER;
         dresseurActuel=dresseurDroite;
     }
 
-    //SDL_EnableKeyRepeat(0, 0);
-    //SDL_BlitSurface(*dresseurActuel, NULL, screen, &positionsurecran);
-    //SDL_BlitSurface(texte, NULL, screen, &positiontexte);
-
     SDL_RenderCopy(pRenderer, dresseurActuel, &imgSize, &positionsurecran);
+    SDL_RenderCopy(pRenderer, texte, &texteSize, &positiontexte);
     LOG_DBG("DeplacerVecteur :: END");
 }
 
@@ -131,10 +133,10 @@ void init_dresseur(SDL_Renderer* ren){
     SDL_Surface* dressDroite = SDL_LoadBMP("./images/bmp/dresseurdroite.bmp");
 
     // Delete white background and add alpha channel
-    SDL_SetColorKey(dressBas, SDL_FALSE, SDL_MapRGB(dressBas->format, 0, 255, 0));
-    SDL_SetColorKey(dressHaut, SDL_FALSE, SDL_MapRGB(dressHaut->format, 0, 255, 0));
-    SDL_SetColorKey(dressGauche, SDL_FALSE, SDL_MapRGB(dressGauche->format, 0, 255, 0));
-    SDL_SetColorKey(dressDroite, SDL_FALSE, SDL_MapRGB(dressDroite->format, 0, 255, 0));
+    SDL_SetColorKey(dressBas, SDL_TRUE, SDL_MapRGB(dressBas->format, 0, 255, 0));
+    SDL_SetColorKey(dressHaut, SDL_TRUE, SDL_MapRGB(dressHaut->format, 0, 255, 0));
+    SDL_SetColorKey(dressGauche, SDL_TRUE, SDL_MapRGB(dressGauche->format, 0, 255, 0));
+    SDL_SetColorKey(dressDroite, SDL_TRUE, SDL_MapRGB(dressDroite->format, 0, 255, 0));
 
     dresseurHaut = SDL_CreateTextureFromSurface(ren, dressHaut);
     dresseurBas = SDL_CreateTextureFromSurface(ren, dressBas);
@@ -150,8 +152,9 @@ void init_dresseur(SDL_Renderer* ren){
     SDL_FreeSurface(dressDroite);
 }
 
-//DEFAULT nom_map "tilesetIPMON.txt" persox "300" persoy "150"
-void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
+void mainLoop(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur)
+{
+    //DEFAULT nom_map "tilesetIPMON.txt" persox "300" persoy "150"
     LOG_DBG("IN jeu function on map:%s", dresseur->map);
     joueur = dresseur;
     
@@ -164,15 +167,14 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
 
     SDL_Rect perso;
     Coord *persoAvant = malloc(sizeof(Coord));
-    SDL_Surface* texte = NULL; 
-    //SDL_Surface* dressActuel = SDL_LoadBMP("./images/bmp/dresseurbas.bmp");
-    //SDL_SetColorKey(dresseurActuel, SDL_FALSE, SDL_MapRGB(dresseurActuel->format, 0, 255, 0));
+    SDL_Surface* texteSurface = NULL;
+    SDL_Texture* texteTexture = NULL;
     
     TTF_Font *police = NULL;
-       SDL_Color couleurNoire = {0, 0, 0}; //couleur noir
-    //TTF_Init();
-    //police = TTF_OpenFont("./arial.ttf", 12); // police
-    //texte = TTF_RenderText_Blended(police, dresseur->pseudo, couleurNoire); // ecriture du texte (exemple)
+    SDL_Color blackColor = {0, 0, 0};
+    TTF_Init();
+    police = TTF_OpenFont("./arial.ttf", 10);
+    texteSurface = TTF_RenderText_Solid(police, dresseur->pseudo, blackColor);
 
     Map* carte;
     //carte = malloc(sizeof(Map));
@@ -217,6 +219,8 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
     gettimeofday(&tv2,NULL);
     
     init_dresseur(pRenderer);
+    texteTexture = SDL_CreateTextureFromSurface(pRenderer, texteSurface);
+    SDL_FreeSurface(texteSurface);
     
     srand(time(NULL));
 
@@ -262,7 +266,7 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
 
         // 25 usec
         DeplacerVecteur(state, &vx, &vy, &perso, pRenderer,
-            carte->xscroll, carte->yscroll, texte, &cltCtx);
+            carte->xscroll, carte->yscroll, texteTexture, &cltCtx);
         
         //SDL_UpdateTexture(sdlTexture, NULL, screen->pixels, screen->pitch);
 
@@ -276,5 +280,6 @@ void jeu(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur){
     cltCtx.stopThread = true;
     sleep(1);
     LibererMap(carte);
+    TTF_Quit();
     SDL_Quit();
 }

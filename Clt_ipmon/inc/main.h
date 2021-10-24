@@ -62,13 +62,55 @@ typedef struct Dresseur{
     int nombreIpmons;
 }Dresseur;
 
-// Command line functions
+/******************************
+ *  Command line functions
+ *****************************/
+
+/**
+ * @brief Print command manual
+ * 
+ * @param char* cmd : command name
+ **/ 
 void printManual(char* cmd);
+
+/**
+ * @brief Process command enter by the user
+ * 
+ * @param int socket : socket open with server
+ * @param struct sockaddr_in* srvaddr : socket address to communicate with the server
+ * @param char* cmd : command to process
+ * 
+ * @return int : connection with the server is ok or not
+ *             1 -> OK
+ *             0 -> KO
+ **/ 
 int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd);
 
-// IPMON connection and register of player
-int connectToIpmonServer(int port);
+/*********************************************
+ *  IPMON connection and register of player
+ ********************************************/
+
+/**
+ * @brief Create socket to send / receive message
+ * 
+ * @param int port : port choose for the client
+ * 
+ * @return int socket : -1 when the creation of the socket fail
+ **/
+int createSocket(int port);
+
+/**
+ * @brief Register player with the data from login struct
+ * 
+ * @param Login* login : pointer to the login structure
+ **/
 void registerPlayer(Login* login);
+
+/**
+ * @brief Connect player with the data from login struct
+ * 
+ * @param Login* login : pointer to the login structure
+ **/
 int connectPlayerToIPMON(Login* login);
 
 #endif 

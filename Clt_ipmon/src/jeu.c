@@ -436,4 +436,6 @@ void *threadUpdatePositionAndListOfPlayer(void *data)
         memset(buf, 0, sizeof(buf));
         memset(bufBig, 0, sizeof(bufBig));
     }
+
+    pthread_exit(NULL);
 }

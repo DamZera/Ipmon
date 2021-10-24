@@ -57,6 +57,6 @@ Ipmon* ajouterIpmon(Ipmon* ipmon_list,
     char* nom_attaque_special,
     int puissance_defense_special);
 
-void *threadUpdatePositionAndListOfPlayer(void *data);
+void* threadUpdatePositionAndListOfPlayer(void *data);
 
 #endif
