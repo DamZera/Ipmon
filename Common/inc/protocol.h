@@ -3,7 +3,7 @@
 
 typedef enum 
 {
-    // O is use by strtol in case of error !
+    // 0 is use by strtol in case of error !
     CONNECT_TO_IPMON          = 2,
     REGISTER_TO_IPMON         = 4,
     NEW_COORDINATES           = 6,

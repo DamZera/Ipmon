@@ -1,6 +1,7 @@
 #include "jeu_serv.h"
 
-void combat_init(MYSQL* ipmon_bdd,char* msg,int *s_dial){
+
+//void combat_init(MYSQL* ipmon_bdd,char* msg,int *s_dial){
     // Ipmon* ipmon_adv  = chercher_ipmon(ipmon_bdd,strtol(msg,NULL,10));
     // Ipmon* mon_ipmon;
     // Dresseur* dresseur = chercher_dresseur(dresseur_list_jeu,*s_dial);
@@ -39,8 +40,9 @@ void combat_init(MYSQL* ipmon_bdd,char* msg,int *s_dial){
     //     send(*s_dial,"L'ipmon commence le jeu\n",strlen("L'ipmon commence le jeu\n"),0);
 
     // // STUBED COMBAT PART 
-}
+//}
 
+/*
 Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
     Ipmon* ipmon = malloc(sizeof(Ipmon));
     char requete[150];
@@ -79,7 +81,7 @@ Ipmon* chercher_ipmon(MYSQL* ipmon_bdd,int id){
     ipmon->puissance_defense_special = strtol(row[16],NULL,10);
 
     return ipmon;
-}
+}*/
             
 int combat(Ipmon ipmonDresseur, Ipmon ipmon, int *s_dial){
     // char buf[BUFFER_SIZE];

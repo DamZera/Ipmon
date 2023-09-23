@@ -5,7 +5,8 @@ SRCS=$(SRC_DIR)/*
 OBJS=map.o main.o jeu.o  GUI_ipmon.o
 
 DEPS=$(INC_DIR_COMMON)/* inc/*
-LIBS=`pkg-config --cflags --libs gtk+-3.0` `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lpthread
+#LIBS=`pkg-config --cflags --libs gtk+-3.0` `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lpthread
+LIBS=`sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf -lpthread
 CFLAGS=-Wall -I$(INC_DIR_COMMON) -Iinc/ $(LIBS)
 
 all: $(OBJS)

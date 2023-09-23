@@ -6,7 +6,7 @@ Dresseur* joueur;
 pthread_mutex_t mutexListOfPlayer = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutexNewPosition = PTHREAD_MUTEX_INITIALIZER;
 
-void initClientContext() 
+void initClientContext()
 {
     LOG_DBG("to implement");
 }
@@ -50,25 +50,38 @@ void setListOfPlayers(TTF_Font *police, char* buffer, ClientContext* cltCtx)
     perso.w = 25;
     perso.h = 25;
     positiontexte = perso;
-    
+
     //dresseur_list_jeu = vider_dresseur_liste(dresseur_list_jeu);
 
     token = strsep(&buffer, "+");
-    while (token != NULL && strcmp(token, "\0") != 0) // TODO change with strncmp
+    while (token != NULL)
     {
         fieldsInToken = strsep(&token, ":");
-        if (fieldsInToken != NULL && strcmp(token, "\0") != 0) // TODO change with strncmp
+        if (fieldsInToken != NULL)
         {
+            LOG_DBG("setListOfPlayers process pseudo:%s" fieldsInToken);
             strcpy(pseudo, fieldsInToken);
             fieldsInToken = strsep(&token, ":");
+            if (fieldsInToken == NULL)
+            {
+                break;
+            }
             perso.x = strtol(fieldsInToken, NULL, 10);
             fieldsInToken = strsep(&token, ":");
+            if (fieldsInToken == NULL)
+            {
+                break;
+            }
             perso.y = strtol(fieldsInToken, NULL, 10);
-            
+
             listOfPlayers = ajouter_dresseur_aff(listOfPlayers, &perso, &positiontexte, texte);
             bzero(pseudo, BUFFER_SIZE);
+            token = strsep(&buffer, "+");
         }
-        token = strsep(&buffer, "+");
+        else
+        {
+            break;
+        }
     }
 
     pthread_mutex_lock(&mutexListOfPlayer);
@@ -80,12 +93,12 @@ void setListOfPlayers(TTF_Font *police, char* buffer, ClientContext* cltCtx)
 Dresseur_aff* ajouter_dresseur_aff(Dresseur_aff *dresseur_list_jeu, SDL_Rect *perso, SDL_Rect *positionTexte, SDL_Surface *texte){
 
     Dresseur_aff* dresseur = malloc(sizeof(Dresseur_aff));
- 
+
     dresseur->texte = texte;
     dresseur->perso = *perso;
     dresseur->positiontexte = *positionTexte;
     dresseur->next = NULL;
- 
+
     if(dresseur_list_jeu == NULL){
         return dresseur;
     }
@@ -104,8 +117,8 @@ Dresseur_aff* ajouter_dresseur_aff(Dresseur_aff *dresseur_list_jeu, SDL_Rect *pe
 Dresseur_aff* vider_dresseur_liste(Dresseur_aff *dresseur_list_jeu){
     Dresseur_aff* dresseur = dresseur_list_jeu;
     Dresseur_aff* tmp;
-    
-    
+
+
     if(dresseur != NULL){
         while(dresseur->next != NULL){
             tmp = dresseur;
@@ -121,9 +134,9 @@ int jeuCombat(int sock)
     int combat = 0, idpokemonAdv = 0, end = 0, msg;
     char buf[BUFFER_SIZE]; bzero(buf,BUFFER_SIZE);
     //char* token;
-    
+
     combat = rand()%300;
-    
+
     if(combat<3){
         //idpokemonAdv = rand()%50+1;
         //printf("Combat contre pokemon id = %d\n",idpokemonAdv);
@@ -154,7 +167,7 @@ int jeuCombat(int sock)
 }
 
 int affichage_combat(int msg, int sock){
-    
+
     printf("STUBED must be reworked");
     //char buf[BUFFER_SIZE];
     //char* token;
@@ -264,7 +277,7 @@ int affichage_combat(int msg, int sock){
 
 Ipmon* ajouterIpmon(Ipmon* ipmon_list,int id,char* nom,char* etat,char* type,int typeEntier,int pv,int agilite,int niveau,int puissance_attaque,char* nom_attaque,int precision_attaque,int puissance_defense,int esquive,int precision,int puissance_attaque_special,int precision_attaque_special,char* nom_attaque_special,int puissance_defense_special){
     Ipmon* ipmon = malloc(sizeof(Ipmon));
-    
+
     ipmon->id=id;
     ipmon->nom = malloc(sizeof(char)*strlen(nom));
     ipmon->etat= malloc(sizeof(char)*strlen(etat));
@@ -289,7 +302,7 @@ Ipmon* ajouterIpmon(Ipmon* ipmon_list,int id,char* nom,char* etat,char* type,int
     ipmon->nom_attaque_special= nom_attaque_special;
     ipmon->puissance_defense_special= puissance_defense_special;//Puissance de la défense spéciale d'un ipmon : intervient lorsqu'un ipmon est attaqué par une attaque spéciale
 
-    
+
      if(ipmon_list == NULL){
         return ipmon;
     }
@@ -312,7 +325,7 @@ void ajoutIpmon(int socket_cli){
     char* token;
     char buf[80];
     dresseur->ipmons = NULL;
-    
+
     while((end == 0) && recv(socket_cli,buf,80,0)){
         if(strcmp(buf,"end") ==0){
             end = 1;
@@ -320,7 +333,7 @@ void ajoutIpmon(int socket_cli){
             ipmon_adv =  malloc(sizeof(Ipmon));
             int id;
             char* nom;
-            
+
             ipmon_adv->etat = malloc(sizeof(char)*50);
             ipmon_adv->type = malloc(sizeof(char)*50);
             ipmon_adv->nom_attaque = malloc(sizeof(char)*50);
@@ -403,26 +416,15 @@ void *threadUpdatePositionAndListOfPlayer(void *data)
 
     int len, n;
     char bufBig[BIG_BUFFER_SIZE];
-    char buf[BUFFER_SIZE];
-  
+
     len = sizeof(cliaddr);  //len is value/resuslt
-  
+
     while (cltCtx->stopThread == false)
     {
-        usleep(100000); // 100ms
-
-        pthread_mutex_lock(&mutexNewPosition);
-        sprintf(buf, "%d:%d:%d:%s", NEW_COORDINATES,
-            cltCtx->xyPlayer->x, cltCtx->xyPlayer->y, cltCtx->player->map);
-        pthread_mutex_unlock(&mutexNewPosition);
-
-        LOG_DBG("send : %s", buf);
-        sendto(cltCtx->socket, buf, strlen(buf), MSG_CONFIRM,
-            (const struct sockaddr *) cltCtx->srvaddr, sizeof(*(cltCtx->srvaddr)));
-        
-        n = recvfrom(cltCtx->socket, (char *)bufBig, BIG_BUFFER_SIZE, 
+        memset(bufBig, 0, sizeof(bufBig));
+        n = recvfrom(cltCtx->socket, (char *)bufBig, BIG_BUFFER_SIZE,
                 MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
-        if (n >= 0)
+        if (n > 0)
         {
             bufBig[n] = '\0';
             LOG_DBG("receive : %s", bufBig);
@@ -432,9 +434,32 @@ void *threadUpdatePositionAndListOfPlayer(void *data)
         {
             LOG_WARN("Timeout without any message receive");
         }
+    }
+
+    pthread_exit(NULL);
+}
+
+void *threadSendPosition(void *data)
+{
+     ClientContext* cltCtx = (ClientContext*) data;
+
+    int len, n;
+    char buf[BUFFER_SIZE];
+
+    while (cltCtx->stopThread == false)
+    {
+        usleep(10000); // 10ms
+
+        pthread_mutex_lock(&mutexNewPosition);
+        sprintf(buf, "%d:%d:%d:%s", NEW_COORDINATES,
+            cltCtx->xyPlayer->x, cltCtx->xyPlayer->y, cltCtx->player->map);
+        pthread_mutex_unlock(&mutexNewPosition);
+
+        LOG_DBG("send : %s", buf);
+        sendto(cltCtx->socket, buf, strlen(buf), MSG_CONFIRM,
+            (const struct sockaddr *) cltCtx->srvaddr, sizeof(*(cltCtx->srvaddr)));
 
         memset(buf, 0, sizeof(buf));
-        memset(bufBig, 0, sizeof(bufBig));
     }
 
     pthread_exit(NULL);

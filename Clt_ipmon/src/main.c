@@ -1,5 +1,5 @@
 #include "main.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define LARGEUR_FENETRE 640
 #define HAUTEUR_FENETRE 480
@@ -66,53 +66,62 @@ int connectPlayerToIPMON(Login* login)
 {
     char buffer [BUFFER_SIZE];
     char *token, *string, *pstring;
-    int n ;
+    int n;
+    int code = 0;
 
     struct sockaddr_in rcvaddr;
     memset(&rcvaddr, 0, sizeof(rcvaddr));
 
     int len;
     len = sizeof(rcvaddr);  //len is value/resuslt
-    
-    bzero(buffer, 200);
-    snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, login->pseudo, login->pass);
-    sendto(login->socket, buffer, strlen(buffer), MSG_CONFIRM,
-        (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 
-    bzero(buffer, 200);
-    n = recvfrom(login->socket, (char *)buffer, 200, 
-                MSG_WAITALL, ( struct sockaddr *) &rcvaddr, &len);
-    LOG_INFO("message: %s ", buffer);
-    
-    pstring = string = strdup(buffer);
-    
-    // Parse login message
-    if ((token = strsep(&string, ":")) != NULL)
+    while (1 != login->connect && ACCEPT_CONNECTION != code)
     {
-        int code = strtol(token, NULL, 10);
-        // Connection OK
-        if (code == ACCEPT_CONNECTION)
-        {
-            token = strsep(&string, ":");
-            dresseur->coodX = (token != NULL) ? strtol(token, NULL, 10) : 300;
-            token = strsep(&string, ":");
-            dresseur->coodY = (token != NULL) ? strtol(token, NULL, 10) : 150;
-            token = strsep(&string, ":");
-            if (token != NULL)
-            {
-                snprintf(dresseur->map, strlen(token)+1, "%s", token);
-            }
-            
-            sprintf(dresseur->pseudo, "%s", login->pseudo);
-            login->connect = 1;
+        bzero(buffer, 200);
+        snprintf(buffer, 200, "%d:%s:%s", CONNECT_TO_IPMON, login->pseudo, login->pass);
+        sendto(login->socket, buffer, strlen(buffer), MSG_CONFIRM,
+            (const struct sockaddr *) login->srvaddr, sizeof(*(login->srvaddr)));
 
-            LOG_INFO("LOGIN ok");
-        }
-        // Connection KO
-        else if (code == REFUSE_CONNECTION)
+        bzero(buffer, 200);
+        n = recvfrom(login->socket, (char *)buffer, 200,
+                    MSG_WAITALL, ( struct sockaddr *) &rcvaddr, &len);
+        LOG_INFO("message: %s ", buffer);
+
+        pstring = string = strdup(buffer);
+
+        // Parse login message
+        if ((token = strsep(&string, ":")) != NULL)
         {
-            LOG_INFO("LOGIN error");
+            code = strtol(token, NULL, 10);
+            // Connection OK
+            if (code == ACCEPT_CONNECTION)
+            {
+                token = strsep(&string, ":");
+                dresseur->coodX = (token != NULL) ? strtol(token, NULL, 10) : 300;
+                token = strsep(&string, ":");
+                dresseur->coodY = (token != NULL) ? strtol(token, NULL, 10) : 150;
+                token = strsep(&string, ":");
+                if (token != NULL)
+                {
+                    snprintf(dresseur->map, strlen(token)+1, "%s", token);
+                }
+
+                sprintf(dresseur->pseudo, "%s", login->pseudo);
+                login->connect = 1;
+
+                LOG_INFO("LOGIN ok");
+            }
+            // Connection KO
+            else if (code == REFUSE_CONNECTION)
+            {
+                LOG_INFO("LOGIN REFUSE_CONNECTION");
+            }
+            else
+            {
+                LOG_INFO("LOGIN Unknown code %d", code);
+            }
         }
+        usleep(2000);
     }
 
     free(pstring);
@@ -124,7 +133,7 @@ int connectPlayerToIPMON(Login* login)
     return 1;
 }
 
-int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd) 
+int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd)
 {
     LOG_DBG("Start processCommand");
     char* string, *token, *cmdTmp;
@@ -135,7 +144,7 @@ int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd)
     login.srvaddr = srvaddr;
 
     string = strdup(cmd);
-    
+
     // Parse command
     if ((cmdTmp = strsep(&string, ":")) != NULL)
     {
@@ -152,7 +161,7 @@ int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd)
         if (strcmp(cmdTmp, "c") == 0)
         {
             connectPlayerToIPMON(&login);
-        } 
+        }
         else if (strcmp(cmdTmp, "r") == 0)
         {
             registerPlayer(&login);
@@ -164,7 +173,7 @@ int processCommand(int socket, struct sockaddr_in* srvaddr, char* cmd)
     }
     return login.connect;
 }
-      
+
 int main(int argc, char *argv[])
 {
     dresseur = malloc(sizeof(Dresseur));
@@ -174,8 +183,8 @@ int main(int argc, char *argv[])
 
     struct sockaddr_in serv_addr;
 
-    if(argc == 5 
-        && argv[1] != NULL 
+    if(argc == 5
+        && argv[1] != NULL
         && argv[2] != NULL
         && argv[3] != NULL
         && argv[4] != NULL)
@@ -202,7 +211,7 @@ int main(int argc, char *argv[])
     }
 
     connect = processCommand(s_cli, &serv_addr, argv[4]);
-    
+
     if(connect == 1 && dresseur != NULL && dresseur->pseudo != NULL)
     {
         mainLoop(s_cli, &serv_addr, dresseur);
@@ -215,5 +224,5 @@ int main(int argc, char *argv[])
     close(s_cli);
     LOG_ERR("CLOSE !!");
 
-    return 0;  
-}  
+    return 0;
+}

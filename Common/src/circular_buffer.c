@@ -96,9 +96,9 @@ int circularBufPut(CircularBuf* q, char* item, struct sockaddr_in* cliaddr){
             q->tail->data = (char*)malloc(sizeof(char)*(strlen(item)+1));
             memcpy(q->tail->data, item, strlen(item)+1);
 
-            q->head->cliaddr.sin_family = AF_INET;
-            q->head->cliaddr.sin_port = cliaddr->sin_port;
-            q->head->cliaddr.sin_addr.s_addr = cliaddr->sin_addr.s_addr;
+            q->tail->cliaddr.sin_family = AF_INET;
+            q->tail->cliaddr.sin_port = cliaddr->sin_port;
+            q->tail->cliaddr.sin_addr.s_addr = cliaddr->sin_addr.s_addr;
 
             q->tail = q->tail->next;
             // now we have to increase the size.
@@ -120,7 +120,7 @@ int circularBufRead(CircularBuf *q, char** item, struct sockaddr_in* cliaddr){
         {
             return ERR_PARAMETER;
 
-        }	
+        }
         else if (circularBufEmpty(q) == CIRCULAR_BUFF_EMPTY)
         {
             return CIRCULAR_BUFF_FULL;

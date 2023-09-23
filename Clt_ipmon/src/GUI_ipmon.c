@@ -163,6 +163,7 @@ void mainLoop(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur)
 
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        exit(1);
     }
 
     SDL_Rect perso;
@@ -242,9 +243,18 @@ void mainLoop(int sock, struct sockaddr_in* srvaddr, Dresseur *dresseur)
     pthread_attr_init(thread_attributes);
     pthread_attr_setdetachstate(thread_attributes, PTHREAD_CREATE_DETACHED);
 
+    pthread_attr_t *thread_attributes_B;
+    pthread_t tid_B;
+    thread_attributes_B = malloc(sizeof *thread_attributes);
+    pthread_attr_init(thread_attributes_B);
+    pthread_attr_setdetachstate(thread_attributes_B, PTHREAD_CREATE_DETACHED);
+
     pthread_create(&tid, thread_attributes, threadUpdatePositionAndListOfPlayer, &cltCtx);
 
+    pthread_create(&tid_B, thread_attributes_B, threadSendPosition, &cltCtx);
+
     pthread_attr_destroy(thread_attributes);
+    pthread_attr_destroy(thread_attributes_B);
 
     while(!state[SDL_SCANCODE_ESCAPE]) // Press ESCAPE to leave
     {    
