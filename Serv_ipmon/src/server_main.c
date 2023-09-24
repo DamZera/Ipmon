@@ -8,13 +8,16 @@
 #include <errno.h>
 
 #include "logger.h"
+#include <time.h>
+
 
 #define TAILLE_BUFF 200
 
 /*Mutex pour les zones critiques*/
 pthread_mutex_t circBufferMutex = PTHREAD_MUTEX_INITIALIZER;
 
-Dresseur* chercher_dresseur(Dresseur *dresseur_list, int socket){
+Dresseur* chercher_dresseur(Dresseur *dresseur_list, int socket)
+{
     // TODO fix after work on IPMON
     /*Dresseur* dresseur = dresseur_list;
     while(dresseur != NULL){
@@ -27,7 +30,8 @@ Dresseur* chercher_dresseur(Dresseur *dresseur_list, int socket){
     return NULL;
 }
 
-Dresseur* searchDresseurPseudo(Dresseur *dresseur_list, char* pseudo){
+Dresseur* searchDresseurPseudo(Dresseur *dresseur_list, char* pseudo)
+{
     Dresseur* dresseur = dresseur_list;
     while(dresseur != NULL){
         if(strncmp(pseudo, dresseur->pseudo, MAX_SIZE_DRESSEUR_STR) == 0)
@@ -39,7 +43,8 @@ Dresseur* searchDresseurPseudo(Dresseur *dresseur_list, char* pseudo){
     return NULL;
 }
 
-Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* pseudo, int coodX, int coodY, char* map, int id){
+Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* pseudo, int coodX, int coodY, char* map, int id)
+{
 
     if (searchDresseurPseudo(dresseur_list, pseudo) != NULL)
     {
@@ -61,6 +66,7 @@ Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* 
         dresseur->next = NULL;
         dresseur->coodX = coodX;
         dresseur->coodY = coodY;
+        dresseur->timeOfLastMessage = (unsigned long)time(NULL);
 
         if(dresseur_list == NULL){
             return dresseur;
@@ -78,7 +84,8 @@ Dresseur* addPlayer(Dresseur *dresseur_list, struct sockaddr_in* cliaddr, char* 
     }
 }
 
-Ipmon* cree_Ipmon(int id, char* nom, char* etat, char* type, int typeEntier     , int pv     , int agilite , int niveau     , int puissance_attaque , char* nom_attaque, int precision_attaque, int puissance_defense , char* nom_defense, int esquive     , int precision     , int puissance_attaque_special, int precision_attaque_special, char* nom_attaque_special, int puissance_defense_special    , char* nom_defense_special){
+Ipmon* cree_Ipmon(int id, char* nom, char* etat, char* type, int typeEntier     , int pv     , int agilite , int niveau     , int puissance_attaque , char* nom_attaque, int precision_attaque, int puissance_defense , char* nom_defense, int esquive     , int precision     , int puissance_attaque_special, int precision_attaque_special, char* nom_attaque_special, int puissance_defense_special    , char* nom_defense_special)
+{
     Ipmon* ipmon = malloc(sizeof(Ipmon));
 
     ipmon->id = id;
@@ -105,19 +112,28 @@ Ipmon* cree_Ipmon(int id, char* nom, char* etat, char* type, int typeEntier     
     return ipmon;
 }
 
-void afficher_dresseur(Dresseur *dresseur_list){
+void afficher_dresseur(Dresseur *dresseur_list)
+{
     Dresseur* dresseur = dresseur_list;
     int i = 0;
-    LOG_INFO("Dresseurs online :");
-    while(dresseur != NULL){
-        LOG_INFO(" Dresseur %d : %s map : %s cood %d:%d",
-            i, dresseur->pseudo, dresseur->map, dresseur->coodX, dresseur->coodY);
-        dresseur = dresseur->next; i++;
+    if (NULL != dresseur)
+    {
+        LOG_INFO("Dresseurs online (list %p) :", dresseur);
+        while(dresseur != NULL){
+            LOG_INFO(" Dresseur %d : %s map : %s cood %d:%d",
+                i, dresseur->pseudo, dresseur->map, dresseur->coodX, dresseur->coodY);
+            dresseur = dresseur->next; i++;
+        }
+    }
+    else
+    {
+        LOG_INFO("No Dresseurs online !");
     }
 }
 
 
-Dresseur* supprimer_dresseur(Dresseur *dresseur_list, int socket){
+Dresseur* supprimer_dresseur(Dresseur *dresseur_list, int socket)
+{
 
     LOG_ERR("TO REFACTOR THIS PART");
     /*if(dresseur_list == NULL)
@@ -136,7 +152,8 @@ Dresseur* supprimer_dresseur(Dresseur *dresseur_list, int socket){
 }
 
 /*
-void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list){
+void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list)
+{
     Dresseur* dresseur = chercher_dresseur(dresseur_list, s_dial);
     char requete[150];
     int i;
@@ -214,6 +231,7 @@ void newPositionOfPlayer(int coodX, int coodY, struct sockaddr_in* cliaddr, Serv
             //     cliaddr->sin_port, dresseur->pseudo, coodX, coodY);
             dresseur->coodX = coodX;
             dresseur->coodY = coodY;
+            dresseur->timeOfLastMessage = (unsigned long)time(NULL);
             break;
         }
         dresseur = dresseur->next;
@@ -327,7 +345,8 @@ int connectToIPMON(struct sockaddr_in* cliaddr,
     return connecte;
 }
 
-int createUdpSocket(int port, int nb_max_clients) {
+int createUdpSocket(int port, int nb_max_clients)
+{
     LOG_DBG("createUdpSocket: begin");
     unsigned int socketServer;
     struct sockaddr_in serv_addr;
@@ -344,13 +363,45 @@ int createUdpSocket(int port, int nb_max_clients) {
     return socketServer;
 }
 
+void checkConnectionOfPlayers(ServerThreadContext* servCtx)
+{
+    Dresseur* dresseur = servCtx->dresseursList;
+    Dresseur* prevPlayer = NULL;
+    unsigned long currentTime = (unsigned long)time(NULL);
+
+    while(dresseur != NULL){
+        if ((currentTime - dresseur->timeOfLastMessage) > TIMEOUT_PLAYER)
+        {
+            LOG_INFO("checkConnectionOfPlayers: force disconnect for %s lastMessage: %lu sec", dresseur->pseudo, (currentTime - dresseur->timeOfLastMessage));
+            if (NULL != prevPlayer)
+            {
+                prevPlayer->next = NULL;
+                if (NULL != dresseur->next)
+                {
+                    prevPlayer->next = dresseur->next;
+                }
+            }
+            else
+            {
+                servCtx->dresseursList = dresseur->next;
+            }
+            free(dresseur);
+            dresseur = NULL;
+            afficher_dresseur(servCtx->dresseursList);
+            break;
+        }
+        prevPlayer = dresseur;
+        dresseur = dresseur->next;
+    }
+}
+
 void processItemsInCircularBuffer(ServerThreadContext* servCtx)
 {
     char* message = NULL;
     char* token = NULL;
     char pseudo[200] = "";
     char pass[200] = "";
-    int code = CODE_INVALID;
+    int code = 0;
     int err;
 
 #ifdef USE_MYSQL_LIB
@@ -367,7 +418,7 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
     {
         memset(pass, 0, 200);
         memset(pseudo, 0, 200);
-        code = CODE_INVALID;
+        code = 0;
         pthread_mutex_lock(&circBufferMutex);
         err = circularBufEmpty(servCtx->circBuffer);
         pthread_mutex_unlock(&circBufferMutex);
@@ -451,11 +502,6 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
                     sendPlayers(&cliaddr, token, servCtx);
 
                 }
-                else if (code == SEND_LIST_PLAYERS) {
-                    // TODO fix second argument DO NOTHING
-                    LOG_WARN("Old API, use NEW_COORDINATES to receive list of players");
-                    //sendPlayers(&cliaddr, strsep(&message, ":"), servCtx);
-                }
             }
             else
             {
@@ -473,8 +519,7 @@ void processItemsInCircularBuffer(ServerThreadContext* servCtx)
             usleep(10000); // 10ms
         }
 
-        // CheckConnection
-        // TODO delete connection with no message since 3s
+        checkConnectionOfPlayers(servCtx);
 
         usleep(2000); // 2ms
     }

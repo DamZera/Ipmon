@@ -21,10 +21,10 @@
 
 #define MAX_CLIENTS 5
 #define MAX_SIZE_IPMON_STR 100
-#define CODE_INVALID 999
 
 #define MAX_SIZE_DRESSEUR_STR 200
 
+#define TIMEOUT_PLAYER 3
 
 typedef struct Ipmon {
     int id;
@@ -51,11 +51,12 @@ typedef struct Ipmon {
 
 typedef struct Dresseur{
     int id;
-    char pseudo[200];
-    char map[200];
+    char pseudo[MAX_SIZE_DRESSEUR_STR];
+    char map[MAX_SIZE_DRESSEUR_STR];
     int niveau;
     int coodX;
     int coodY;
+    unsigned long timeOfLastMessage; // (unsigned long)time(NULL)
     struct sockaddr_in cliaddr;
     struct Dresseur* next;
     Ipmon* ipmons;
@@ -80,6 +81,7 @@ Dresseur* chercher_dresseur(Dresseur *dresseur_list, int socket);
 Dresseur* searchDresseurPseudo(Dresseur *dresseur_list, char* pseudo);
 void newPositionOfPlayer(int coodX, int coodY, struct sockaddr_in* cliaddr, ServerThreadContext* servCtx);
 void sendPlayers(struct sockaddr_in* cliaddr,char *map, ServerThreadContext* servCtx);
+void checkConnectionOfPlayers(ServerThreadContext* servCtx); // Delete players from list not connected since 3s
 
 //void envoieIpmonDresseur(int s_dial,MYSQL* ipmon_bdd, Dresseur* dresseur_list);
 
